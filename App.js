@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import 'react-native-gesture-handler';
 
 import Login from './components/Login'
 import Signup from './components/Signup'
