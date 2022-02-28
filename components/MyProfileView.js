@@ -89,7 +89,7 @@ class MyProfileView extends Component {
 
         <Button
             title="My Post"
-            onPress={() => this.props.navigation.navigate("MyPost")}
+            onPress={() => this.props.navigation.navigate("MyPosts")}
         />
 
 

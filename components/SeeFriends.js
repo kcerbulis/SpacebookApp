@@ -9,7 +9,7 @@ class SeeFriends extends Component{
 
         this.state = {
           isLoading: true,
-          listData: []
+          friendData: []
         }
 
 
@@ -18,13 +18,19 @@ class SeeFriends extends Component{
 
 
     componentDidMount() {
-      this.getData();
+      console.log("Dwdw")
+      this.loadFriends();
     }
 
 
-    getData = async () => {
+    loadFriends = async () => {
+
+      //Gets user session token
       const value = await AsyncStorage.getItem('@session_token');
-      return fetch("http://localhost:3333/api/1.0.0/search", {
+      //Gets user ID
+      const id = await AsyncStorage.getItem('@session_id');
+
+      return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/friends", {
             'headers': {
               'X-Authorization':  value
             }
@@ -33,20 +39,23 @@ class SeeFriends extends Component{
               if(response.status === 200){
                   return response.json()
               }else if(response.status === 401){
+                alert("You need to log in")
                 this.props.navigation.navigate("Login");
               }else{
                   throw 'Something went wrong';
               }
           })
           .then((responseJson) => {
+            console.log(responseJson)
             this.setState({
               isLoading: false,
-              listData: responseJson
+              friendData: responseJson
             })
           })
           .catch((error) => {
               console.log(error);
           })
+
     }
 
 
@@ -63,13 +72,12 @@ class SeeFriends extends Component{
 
                 <View>
                   <FlatList
-                        data={this.state.listData}
-                        renderItem={({item}) => (
-                            <View>
-                              <Text>{item.user_givenname} {item.user_familyname}</Text>
-                            </View>
-                        )}
-                        keyExtractor={(item,index) => item.user_id.toString()}
+                    data={this.state.friendData}
+                    renderItem={({item}) => (
+                        <View>
+                          <Text>{item.user_givenname} {item.user_familyname}</Text>
+                        </View>
+                    )}
                       />
                 </View>
 
