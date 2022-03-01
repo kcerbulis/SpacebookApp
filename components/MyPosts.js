@@ -16,7 +16,13 @@ class MyPosts extends Component{
     }
 
     componentDidMount() {
-      this.loadPosts();
+      this.unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.loadPosts();
+      });
+    }
+
+    componentWillUnmount() {
+      AsyncStorage.removeItem('post_id');
     }
 
 
@@ -105,14 +111,20 @@ class MyPosts extends Component{
             console.log(error);
             this.loadPosts();
         })
+    }
 
 
 
 
+    inspecPost = async (postID) => {
+
+      await AsyncStorage.setItem('@post_id', postID);
+      const iddd = await AsyncStorage.getItem('@post_id');
 
 
+      console.log("Post ID is " + iddd)
 
-
+      this.props.navigation.navigate("MyPost")
 
     }
 
@@ -143,14 +155,6 @@ class MyPosts extends Component{
                 value={this.state.postContent}
               />
 
-              <FlatList
-                  data={this.state.listData}
-                  renderItem={({item}) => (
-                      <View>
-                        <Text>{item.text}</Text>
-                      </View>
-                )}
-                  />
 
 
 
@@ -160,6 +164,24 @@ class MyPosts extends Component{
                 }}
                 title="Add new post"
               />
+
+              <FlatList
+                  data={this.state.listData}
+                  renderItem={({item, index}) => (
+                      <View>
+                        <Text>{item.text}</Text>
+
+                        <Button
+                            title="Inspec Post"
+                            onPress={() => this.inspecPost(item.post_id)}
+                        />
+                      </View>
+                )}
+                  />
+
+
+
+
 
             </View>
             <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>

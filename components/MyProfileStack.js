@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 import MyPosts from './MyPosts';
+import MyPost from './MyPost';
 import MyProfileView from './MyProfileView';
 import FriendRequests from './FriendRequests';
 import SeeFriends from './SeeFriends';
@@ -37,6 +38,7 @@ class MyProfileStack extends Component {
       <Stack.Navigator>
         <Stack.Screen name="MyProfileView - 6,7,15" component={MyProfileView} />
         <Stack.Screen name="MyPosts" component={MyPosts} />
+        <Stack.Screen name="MyPost" component={MyPost} />
         <Stack.Screen name="FriendRequests" component={FriendRequests} />
         <Stack.Screen name="SeeFriends" component={SeeFriends} />
         <Stack.Screen name="UpdateMyInfo" component={UpdateMyInfo} />
