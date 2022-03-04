@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import { Text, TextInput, View, ScrollView, Button, StyleSheet, Alert, FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Camera } from 'expo-camera';
 
 
 
@@ -13,38 +14,48 @@ class MyProfileView extends Component {
 
     this.state = {
       isLoading: true,
-      listData: []
+      photo: '',
+      listData: [],
+
     }
+  }
+
+  componentDidMount(){
+    this.displayProfilePhoto();
+
+
   }
 
 
 
 
-  getData = async () => {
+  displayProfilePhoto = async () => {
+
     const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/search", {
+    const userID = await AsyncStorage.getItem('@session_id');
+
+
+    return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/photo", {
           'headers': {
             'X-Authorization':  value
           }
-        })
-        .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            listData: responseJson
-          })
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+    })
+    .then((res) => {
+      return res.blob()
+    })
+    .then((resBlob) => {
+      let data = URL.createObjectURL(resBlob);
+      console.log(data)
+      this.setState({
+        photo: data,
+        isLoading: false
+      });
+    })
+    .catch((err) => {
+      console.log("error", err)
+    });
+
+
   }
 
 
@@ -82,7 +93,17 @@ class MyProfileView extends Component {
 
 
 
+        <Image
 
+          source={{
+            uri: this.state.photo,
+          }}
+
+          style={{
+            width: 400,
+            height: 400
+          }}
+        />
 
 
 
@@ -108,6 +129,8 @@ class MyProfileView extends Component {
             title="My Info"
             onPress={() => this.props.navigation.navigate("UpdateMyInfo")}
         />
+
+
 
 
 

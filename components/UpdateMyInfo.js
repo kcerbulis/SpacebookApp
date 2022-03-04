@@ -1,85 +1,73 @@
 import React, { Component } from 'react';
-import { Button, Text, View, FlatList } from 'react-native';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Camera } from 'expo-camera';
 
 class UpdateMyInfo extends Component{
-    constructor(props){
-        super(props);
+  constructor(props){
+    super(props);
 
-        this.state = {
-          isLoading: true,
-          userInfo: []
-        }
-
-
+    this.state = {
+      hasPermission: null,
+      type: Camera.Constants.Type.back
     }
+  }
 
+  async componentDidMount(){
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    this.setState({hasPermission: status === 'granted'});
+  }
 
+  render(){
+    if(this.state.hasPermission){
+      return(
+        <View style={styles.container}>
+          <Camera style={styles.camera} type={this.state.type}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  let type = type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back;
 
-    componentDidMount() {
-      this.loadFriends();
+                  this.setState({type: type});
+                }}>
+                <Text style={styles.text}> Flip </Text>
+              </TouchableOpacity>
+            </View>
+          </Camera>
+        </View>
+      );
+    }else{
+      return(
+        <Text>No access to camera</Text>
+      );
     }
-
-
-    loadFriends = async () => {
-
-      //Gets user session token
-      const value = await AsyncStorage.getItem('@session_token');
-      //Gets user ID
-      const id = await AsyncStorage.getItem('@session_id');
-
-      return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
-            'headers': {
-              'X-Authorization':  value
-            }
-          })
-          .then((response) => {
-              if(response.status === 200){
-                  return response.json()
-              }else if(response.status === 401){
-                alert("You need to log in")
-                this.props.navigation.navigate("Login");
-              }else{
-                  throw 'Something went wrong';
-              }
-          })
-          .then((responseJson) => {
-            console.log(responseJson)
-            this.setState({
-              isLoading: false,
-              userInfo: responseJson
-            })
-          })
-          .catch((error) => {
-              console.log(error);
-          })
-    }
-
-
-    render(){
-        return (
-            <ScrollView>
-
-                <View>
-                  <FlatList
-                    data={this.state.userInfo}
-                    renderItem={({item}) => (
-                        <View>
-                          <Text>{item.first_name}</Text>
-                        </View>
-                    )}
-                      />
-                </View>
-
-
-
-
-
-                <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
-            </ScrollView>
-        )
-    }
+  }
 }
 
 export default UpdateMyInfo;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  camera: {
+    flex: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    margin: 20,
+  },
+  button: {
+    flex: 0.1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 18,
+    color: 'white',
+  },
+});

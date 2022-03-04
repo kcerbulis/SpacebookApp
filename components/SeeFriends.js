@@ -23,6 +23,8 @@ class SeeFriends extends Component{
     }
 
 
+
+
     loadFriends = async () => {
 
       //Gets user session token
@@ -78,6 +80,7 @@ class SeeFriends extends Component{
                           <Text>{item.user_givenname} {item.user_familyname}</Text>
                         </View>
                     )}
+                    keyExtractor={(item,index) => item.user_id.toString()}
                       />
                 </View>
 
