@@ -3,7 +3,7 @@ import { Button, Text, View, FlatList } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SeeFriends extends Component{
+class SeeUserFriends extends Component{
     constructor(props){
         super(props);
 
@@ -30,7 +30,7 @@ class SeeFriends extends Component{
       //Gets user session token
       const value = await AsyncStorage.getItem('@session_token');
       //Gets user ID
-      const id = await AsyncStorage.getItem('@session_id');
+      const id = await AsyncStorage.getItem('@user_id');
 
       return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/friends", {
             'headers': {
@@ -43,6 +43,9 @@ class SeeFriends extends Component{
               }else if(response.status === 401){
                 alert("You need to log in")
                 this.props.navigation.navigate("Login");
+              }else if(response.status === 403){
+                alert("Can only view the friends of yourself or your friends")
+                this.props.navigation.goBack();
               }else{
                   throw 'Something went wrong';
               }
@@ -69,7 +72,6 @@ class SeeFriends extends Component{
 
     render(){
 
-
       if(this.state.isLoading){
         return(
           <View
@@ -86,6 +88,8 @@ class SeeFriends extends Component{
 
         return (
             <ScrollView>
+
+
                 <View>
                   <FlatList
                     data={this.state.friendData}
@@ -109,4 +113,4 @@ class SeeFriends extends Component{
     }
 }
 
-export default SeeFriends;
+export default SeeUserFriends;

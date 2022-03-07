@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, Button
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class UpdateMyInfo extends Component{
+class UserInfo extends Component{
   constructor(props){
     super(props);
 
@@ -32,7 +32,7 @@ class UpdateMyInfo extends Component{
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
     //Gets user ID
-    const id = await AsyncStorage.getItem('@session_id');
+    const id = await AsyncStorage.getItem('@user_id');
 
 
 
@@ -90,26 +90,20 @@ class UpdateMyInfo extends Component{
         <ScrollView>
           <View>
 
-          <TextInput
-            defaultValue={this.state.userInfo.first_name}
-          />
+          <Text>
+            {this.state.userInfo.first_name}
+          </Text>
+          <Text>
+            {this.state.userInfo.last_name}
+          </Text>
+          <Text>
+            {this.state.userInfo.email}
+          </Text>
 
-          <TextInput
-            defaultValue={this.state.userInfo.last_name}
-          />
 
-          <TextInput
-            defaultValue={this.state.userInfo.email}
-          />
-
-          <TextInput
-              placeholder="New password..."
-              secureTextEntry
-          />
 
 
           </View>
-          <Button title="Take Photo" onPress={() => this.props.navigation.navigate("TakePhoto")}/>
           <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
         </ScrollView>
       );
@@ -135,4 +129,4 @@ class UpdateMyInfo extends Component{
 
 }
 
-export default UpdateMyInfo;
+export default UserInfo;

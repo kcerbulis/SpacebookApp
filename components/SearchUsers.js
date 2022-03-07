@@ -54,8 +54,43 @@ class SearchStack extends Component {
 
 
   queryUsers = async () => {
-    console.log("Users queried")
+
+
+    let queryText = this.state.searchText;
+
+    console.log(queryText)
+
+    //Gets user session token
+    const value = await AsyncStorage.getItem('@session_token');
+
+    return fetch("http://localhost:3333/api/1.0.0/search?q=" + queryText, {
+          'headers': {
+            'X-Authorization':  value
+          }
+    })
+    .then((response) => {
+        if(response.status === 200){
+            return response.json()
+        }else if(response.status === 401){
+          alert("You need to log in")
+          this.props.navigation.navigate("Login");
+        }else{
+            throw 'Something went wrong';
+        }
+    })
+    .then((responseJson) => {
+      console.log(responseJson)
+      this.setState({
+        isLoading: false,
+        friendData: responseJson
+      })
+    })
+    .catch((error) => {
+        console.log(error);
+    })
   }
+
+
 
   loadUsers = async () => {
 
@@ -116,7 +151,7 @@ class SearchStack extends Component {
           value={this.state.searchText}
         />
 
-        <Button title="Search" onPress={() => this.props.navigation.goBack()}/>
+        <Button title="Search" onPress={() => this.queryUsers()}/>
 
 
         <View>

@@ -3,7 +3,7 @@ import { Button, Text, FlatList, View } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class MyPosts extends Component{
+class UserPosts extends Component{
     constructor(props){
         super(props);
 
@@ -38,7 +38,7 @@ class MyPosts extends Component{
       //Gets user session token
       const value = await AsyncStorage.getItem('@session_token');
       //Gets user ID
-      const id = await AsyncStorage.getItem('@session_id');
+      const id = await AsyncStorage.getItem('@user_id');
 
       return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
             'headers': {
@@ -51,6 +51,9 @@ class MyPosts extends Component{
               }else if(response.status === 401){
                 alert("You need to log in")
                 this.props.navigation.navigate("Login");
+              }else if(response.status === 403){
+                alert("You can only see post of your friends")
+                this.props.navigation.goBack();
               }else{
                   throw 'Something went wrong';
               }
@@ -73,7 +76,7 @@ class MyPosts extends Component{
       //Gets user session token
       const value = await AsyncStorage.getItem('@session_token');
       //Gets user ID
-      const id = await AsyncStorage.getItem('@session_id');
+      const id = await AsyncStorage.getItem('@user_id');
 
 
 
@@ -116,15 +119,20 @@ class MyPosts extends Component{
 
 
 
-    inspecPost = async (postID) => {
+    inspecPost = async (postID, profileID) => {
 
       await AsyncStorage.setItem('@post_id', postID);
-      const iddd = await AsyncStorage.getItem('@post_id');
+      const userPostID = await AsyncStorage.getItem('@post_id');
+
+      await AsyncStorage.setItem('@profile_id', profileID);
+      const posterProfileID = await AsyncStorage.getItem('@profile_id');
 
 
-      console.log("Post ID is " + iddd)
+      console.log("Post ID is " + userPostID)
 
-      this.props.navigation.navigate("MyPost")
+      console.log("User ID is " + posterProfileID)
+
+      this.props.navigation.navigate("UserPost")
 
     }
 
@@ -173,7 +181,7 @@ class MyPosts extends Component{
 
                         <Button
                             title="Inspec Post"
-                            onPress={() => this.inspecPost(item.post_id)}
+                            onPress={() => this.inspecPost(item.post_id, item.author.user_id)}
                         />
                       </View>
                 )}
@@ -191,4 +199,4 @@ class MyPosts extends Component{
     }
 }
 
-export default MyPosts;
+export default UserPosts;
