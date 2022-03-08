@@ -11,7 +11,8 @@ class MyPost extends Component{
             isLoading: true,
             postData: [],
             request: {},
-            updatePostContent: ""
+            updatePostContent: "",
+            myPost: false
         }
     }
 
@@ -53,6 +54,7 @@ class MyPost extends Component{
               isLoading: false,
               postData: responseJson
             })
+            this.checkAuthor(responseJson);
           })
           .catch((error) => {
               console.log(error);
@@ -62,6 +64,16 @@ class MyPost extends Component{
 
 
 
+    checkAuthor = async (responseJson) => {
+      const id = await AsyncStorage.getItem('@session_id');
+
+
+      if(id == responseJson.author.user_id){
+        this.setState({
+          myPost: true
+        });
+      }
+    }
 
 
 
@@ -86,7 +98,9 @@ class MyPost extends Component{
       const userID = await AsyncStorage.getItem('@session_id');
       const value = await AsyncStorage.getItem('@session_token');
 
-      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID, {
+      let string = "http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID;
+
+      return fetch(string, {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +108,7 @@ class MyPost extends Component{
             }
         })
         .then((response) => {
-            console.log(response.status)
+            console.log(string + " : " + response.status)
             this.props.navigation.goBack();
             alert("Post Removed")
             if(response.status === 200){
@@ -169,11 +183,50 @@ class MyPost extends Component{
 
 
 
+    likePost = async () => {
+
+      const userPostID = await AsyncStorage.getItem('@post_id');
+      const userID = await AsyncStorage.getItem('@my_id');
+      const value = await AsyncStorage.getItem('@session_token');
+
+      let authorID = this.state.postData.author.user_id;
+
+      console.log("Author ID is " + userID + " and my post ID is " + userPostID)
 
 
 
+      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID + "/like", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization':  value
+            }
+        })
+        .then((response) => {
+          console.log(response.status)
+          this.props.navigation.goBack()
+            if(response.status === 201){
+                console.log("Yay")
+                return response.json()
+            }else if(response.status === 400){
+                throw 'Failed validation';
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then((responseJson) => {
+
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+     }
 
 
+
+     unlikePost = async () => {
+       console.log("Post unliked")
+     }
 
 
 
@@ -211,7 +264,7 @@ class MyPost extends Component{
             <Text>Loading</Text>
           </View>
         );
-      }else{
+      }else if (this.state.myPost){
 
         return (
           <ScrollView>
@@ -229,6 +282,23 @@ class MyPost extends Component{
             <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
           </ScrollView>
         );
+      }else{
+        return(
+          <ScrollView>
+            <View>
+
+            <TextInput
+              defaultValue={this.state.postData.text}
+              onChangeText={value => this.setState({updatePostContent: value})}
+            />
+
+
+            </View>
+            <Button title="Like" onPress={() => this.likePost()}/>
+            <Button title="Unlike" onPress={() => this.unlikePost()}/>
+            <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
+          </ScrollView>
+          )
       }
       }
     }

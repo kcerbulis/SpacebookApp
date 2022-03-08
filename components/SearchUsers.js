@@ -28,6 +28,7 @@ class SearchStack extends Component {
 
 
     await AsyncStorage.setItem('@user_id', userID);
+    await AsyncStorage.setItem('@userT_id', userID);
 
     const test = await AsyncStorage.getItem('@user_id');
 

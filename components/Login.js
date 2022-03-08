@@ -60,6 +60,7 @@ class LoginScreen extends Component{
         .then(async (responseJson) => {
                 console.log(responseJson);
                 await AsyncStorage.setItem('@session_id', responseJson.id);
+                await AsyncStorage.setItem('@my_id', responseJson.id);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
 
 

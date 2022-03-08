@@ -240,7 +240,47 @@ class UserPost extends Component{
 
 
     deletePost = async () => {
-      console.log("Delete Post")
+
+
+      const postID = await AsyncStorage.getItem('@post_id');
+      const userID = await AsyncStorage.getItem('@userT_id');
+      const value = await AsyncStorage.getItem('@session_token');
+
+      console.log(postID)
+      console.log(userID)
+      console.log(value)
+
+      let string = "http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID;
+
+      return fetch(string, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization':  value
+            }
+        })
+        .then((response) => {
+            console.log(string + " : " + response.status)
+            this.props.navigation.goBack();
+            alert("Post Removed")
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 400){
+                throw 'Failed validation';
+            }else{
+                throw 'Something went wrong ' + response.status;
+            }
+        })
+        .then((responseJson) => {
+          console.log("Need to go back")
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+
+
+
     }
 
 
