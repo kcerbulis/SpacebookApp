@@ -51,7 +51,7 @@ class Main extends Component {
 
 
 
-      <Tab.Navigator initialRouteName="Search">
+      <Tab.Navigator initialRouteName="My Profile">
         <Tab.Screen name="Search" component={SearchStack}  options={{headerShown: false}} />
         <Tab.Screen name="My Profile" component={MyProfileStack} options={{headerShown: false}}/>
         <Tab.Screen name="Friend Requests" component={FriendRequests} options={{headerShown: false}}/>
