@@ -63,6 +63,13 @@ class LoginScreen extends Component{
                 await AsyncStorage.setItem('@my_id', responseJson.id);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
 
+                await AsyncStorage.setItem('@profileState', 'mine');
+                await AsyncStorage.setItem('@postsState', 'mine');
+
+                let prof = await AsyncStorage.getItem('@profileState');
+
+
+
 
                 const id = await AsyncStorage.getItem('@session_id');
                 console.log("My id is " + id);

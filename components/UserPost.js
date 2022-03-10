@@ -21,56 +21,60 @@ class UserPost extends Component{
 
     componentDidMount() {
       this.loadPost();
+      console.log("In a user post")
     }
 
 
 
     updatePost = async (requestingUserID) => {
 
+      if (Object.keys(this.state.updatePostContent).length == 0) {
+        alert("Nothing to update")
+      }
+      else{
+        const postID = await AsyncStorage.getItem('@post_id');
+        const userID = await AsyncStorage.getItem('@user_id');
+        const value = await AsyncStorage.getItem('@session_token');
 
-      const postID = await AsyncStorage.getItem('@post_id');
-      const userID = await AsyncStorage.getItem('@user_id');
-      const value = await AsyncStorage.getItem('@session_token');
+        console.log("The post ID is " + postID)
+        console.log("The user ID is " + userID)
+        console.log("The session token is " + value)
 
-      console.log("The post ID is " + postID)
-      console.log("The user ID is " + userID)
-      console.log("The session token is " + value)
+        this.state.postData.text = this.state.updatePostContent
 
-      this.state.postData.text = this.state.updatePostContent
-
-      const body = this.state.postData
-
-
-
-
-      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID, {
-        method: 'PATCH',
-        headers: {
-          'content-type': 'application/json',
-          'X-Authorization':  value
-        },
-        body: JSON.stringify(body)
-    })
-    .then((response) => {
-        console.log(response.status)
-        this.props.navigation.goBack();
-        alert("Post Updated")
-        if(response.status === 200){
-            return response.json()
-        }else if(response.status === 400){
-            throw 'Failed validation';
-        }else{
-            throw 'Something went wrong ' + response.status;
-        }
-    })
-    .then((responseJson) => {
-      console.log("Need to go back")
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+        const body = this.state.postData
 
 
+
+
+        return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID, {
+          method: 'PATCH',
+          headers: {
+            'content-type': 'application/json',
+            'X-Authorization':  value
+          },
+          body: JSON.stringify(body)
+      })
+      .then((response) => {
+          console.log(response.status)
+          this.props.navigation.goBack();
+          alert("Post Updated")
+          if(response.status === 200){
+              return response.json()
+          }else if(response.status === 400){
+              throw 'Failed validation';
+          }else{
+              throw 'Something went wrong ' + response.status;
+          }
+      })
+      .then((responseJson) => {
+        console.log("Need to go back")
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+
+      }
     }
 
 

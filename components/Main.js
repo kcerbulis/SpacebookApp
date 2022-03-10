@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import SearchStack from './SearchStack';
 import MyProfileStack from './MyProfileStack';
-import FriendRequests from './FriendRequests';
 import Logout from './Logout';
 
 const Tab = createBottomTabNavigator();
@@ -54,7 +53,6 @@ class Main extends Component {
       <Tab.Navigator initialRouteName="My Profile">
         <Tab.Screen name="Search" component={SearchStack}  options={{headerShown: false}} />
         <Tab.Screen name="My Profile" component={MyProfileStack} options={{headerShown: false}}/>
-        <Tab.Screen name="Friend Requests" component={FriendRequests} options={{headerShown: false}}/>
         <Tab.Screen name="Log Out" component={Logout} options={{headerShown: false}}/>
       </Tab.Navigator>
 

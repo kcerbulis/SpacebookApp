@@ -14,6 +14,7 @@ class FriendRequests extends Component {
   }
 
   componentDidMount() {
+    console.log("DELETE ME")
     this.loadFriendRequests();
   }
 
@@ -159,26 +160,16 @@ class FriendRequests extends Component {
     }else{
       return (
         <ScrollView>
-
           <FlatList
             data={this.state.friendRequestData}
             renderItem={({item, index}) => (
                 <View>
                   <Text>{item.first_name} {item.last_name}</Text>
-                  <Button
-                    onPress={() => this.acceptFriendRequest(item.user_id)}
-                    title="Accept"
-                  />
-                  <Button
-                    onPress={() => this.declineFriendReques(item.user_id)}
-                    title="Decline"
-                  />
+                  <Button onPress={() => this.acceptFriendRequest(item.user_id)} title="Accept"/>
+                  <Button onPress={() => this.declineFriendReques(item.user_id)} title="Decline"/>
                 </View>
-            )}
-          />
-
+            )}/>
           <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
-          <Button title="Load Page" onPress={() => this.loadFriendRequests()}/>
         </ScrollView>
       );
     }

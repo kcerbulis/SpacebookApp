@@ -14,9 +14,6 @@ class TakePhoto extends Component{
   }
 
   async componentDidMount(){
-
-
-
     const { status } = await Camera.requestCameraPermissionsAsync();
     this.setState({hasPermission: status === 'granted'});
   }
@@ -32,12 +29,7 @@ class TakePhoto extends Component{
     }
   }
 
-
-
-
-
   sendToServer = async (data) => {
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
     //Gets user ID
@@ -55,7 +47,8 @@ class TakePhoto extends Component{
           body: blob
         })
         .then((response) => {
-          console.log("Picture added ", response);
+          alert("New Picture Uploaded!");
+          this.props.navigation.navigate("Profile")
         })
         .catch((err) => {
           console.log(err);

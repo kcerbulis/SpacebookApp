@@ -15,7 +15,10 @@ class SearchStack extends Component {
   }
 
   componentDidMount() {
-    this.loadUsers();
+    //Updates list everytime focus is changed
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.loadUsers();
+    });
   }
 
 
@@ -32,11 +35,13 @@ class SearchStack extends Component {
 
     const test = await AsyncStorage.getItem('@user_id');
 
+    await AsyncStorage.setItem('@profileState', 'user');
+
 
     console.log("Navigating to user " + test)
 
 
-    this.props.navigation.navigate("UserProfileView")
+    this.props.navigation.navigate("Profile")
   }
 
 

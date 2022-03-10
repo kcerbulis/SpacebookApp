@@ -146,10 +146,6 @@ class MyPost extends Component{
         const userID = await AsyncStorage.getItem('@session_id');
         const value = await AsyncStorage.getItem('@session_token');
 
-        console.log("The post ID is " + postID)
-        console.log("The user ID is " + userID)
-        console.log("The session token is " + value)
-
         this.state.postData.text = this.state.updatePostContent
 
         const body = this.state.postData
