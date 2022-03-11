@@ -101,7 +101,7 @@ class UserPost extends Component{
       const userID = await AsyncStorage.getItem('@user_id');
       const value = await AsyncStorage.getItem('@session_token');
 
-
+      console.log("This is what happens")
 
 
 
@@ -188,6 +188,8 @@ class UserPost extends Component{
 
     //Loads user posts
     loadPost = async () => {
+
+      
 
       const userPostID = await AsyncStorage.getItem('@post_id');
       const userID = await AsyncStorage.getItem('@user_id');

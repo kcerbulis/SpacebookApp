@@ -25,11 +25,10 @@ class Profile extends Component {
   }
 
   componentDidMount(){
-
     //Checks if Mine or User profile
     this.checkWhosProfile();
 
-    //Allows new profile photo to be seem immedietly after upload
+    //Allows new profile photo to be seen immedietly after upload
     this.focus = this.props.navigation.addListener('focus', () => {
       this.updateProfilePhoto();
     });
@@ -188,6 +187,19 @@ class Profile extends Component {
       })
   }
 
+  goToUserPosts = async () => {
+    console.log("Taken to user posts")
+
+    await AsyncStorage.setItem('@postsState', 'user');
+
+    const userID = await AsyncStorage.getItem('@user_id');
+    const postState = await AsyncStorage.getItem('@postsState');
+
+    console.log(userID + " " + postState)
+
+    this.props.navigation.navigate("PostsUser");
+  }
+
 
 
   render() {
@@ -223,7 +235,7 @@ class Profile extends Component {
           return(
             <ScrollView>
               <Image source={{uri: this.state.photoUser,}} style={{width: 400,height: 400}}/>
-              <Button title="Post" onPress={() => this.props.navigation.navigate("UserPosts")}/>
+              <Button title="Post" onPress={() => this.goToUserPosts()}/>
               <Button title="View Friends" onPress={() => this.props.navigation.navigate("SeeUserFriends")}/>
               <Button title="User Info" onPress={() => this.props.navigation.navigate("UserInfo")}/>
               <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>

@@ -197,6 +197,8 @@ class MyPost extends Component{
       const userID = await AsyncStorage.getItem('@my_id');
       const value = await AsyncStorage.getItem('@session_token');
 
+
+
       let authorID = this.state.postData.author.user_id;
 
       console.log("Author ID is " + userID + " and my post ID is " + userPostID)
@@ -233,7 +235,43 @@ class MyPost extends Component{
 
 
      unlikePost = async () => {
-       console.log("Post unliked")
+       console.log("Post unliked");
+
+
+       const userPostID = await AsyncStorage.getItem('@post_id');
+       const userID = await AsyncStorage.getItem('@my_id');
+       const value = await AsyncStorage.getItem('@session_token');
+
+
+       console.log("1: " + userPostID);
+       console.log("2: " + userID);
+       console.log("3: " + value);
+
+
+       return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID + "/like", {
+             method: 'delete',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-Authorization':  value
+             }
+         })
+         .then((response) => {
+           console.log(response.status)
+           this.props.navigation.goBack()
+             if(response.status === 201){
+                 console.log("Yay")
+                 return response.json()
+             }else if(response.status === 400){
+                 throw 'Failed validation';
+             }else{
+                 throw 'Something went wrong';
+             }
+         })
+         .then((responseJson) => {
+         })
+         .catch((error) => {
+             console.log(error);
+         })
      }
 
 

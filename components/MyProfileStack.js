@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MyPosts from './MyPosts';
 import MyPost from './MyPost';
 import Posts from './Posts';
+import UserPost from './UserPost'
 import FriendRequests from './FriendRequests';
 import SeeFriends from './SeeFriends';
 import UpdateMyInfo from './UpdateMyInfo';
@@ -28,6 +29,13 @@ class MyProfileStack extends Component {
 
 
 
+  componentDidMount() {
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      AsyncStorage.setItem('@postsState', 'mine');
+      AsyncStorage.setItem('@profileState', 'mine');
+    });
+  }
+
 
 
 
@@ -46,6 +54,7 @@ class MyProfileStack extends Component {
         <Stack.Screen name="UpdateMyInfo" component={UpdateMyInfo} options={{headerShown: false}}/>
         <Stack.Screen name="TakePhoto" component={TakePhoto} options={{headerShown: false}}/>
         <Stack.Screen name="Posts" component={Posts} options={{headerShown: false}}/>
+        <Stack.Screen name="UserPost" component={UserPost} options={{headerShown: false}}/>
       </Stack.Navigator>
     );
   }
