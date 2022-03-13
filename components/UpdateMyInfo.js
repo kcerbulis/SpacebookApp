@@ -118,10 +118,12 @@ class UpdateMyInfo extends Component{
         }
     })
     .then((responseJson) => {
-      console.log("Need to go back")
+      console.log("No Error")
+      this.props.navigation.goBack()
     })
     .catch((error) => {
         console.log(error);
+        this.props.navigation.goBack()
     })
   }
 

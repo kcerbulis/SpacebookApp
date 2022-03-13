@@ -162,6 +162,8 @@ class SearchStack extends Component {
 
         <View>
           <FlatList
+            initialNumToRender={10}
+            windowSize={10}
             data={this.state.friendData}
             renderItem={({item}) => (
                 <View>

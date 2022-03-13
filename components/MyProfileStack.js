@@ -4,31 +4,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-
-import MyPosts from './MyPosts';
-import MyPost from './MyPost';
+//Importing all relavent componenets
+import Profile from './Profile';
 import Posts from './Posts';
+import MyPost from './MyPost';
 import UserPost from './UserPost'
 import FriendRequests from './FriendRequests';
 import SeeFriends from './SeeFriends';
 import UpdateMyInfo from './UpdateMyInfo';
 import TakePhoto from './TakePhoto';
-import Profile from './Profile';
 
-
-
+//Allows stack navigation
 const Stack = createNativeStackNavigator();
 
 class MyProfileStack extends Component {
-
   constructor(props){
     super(props);
   }
 
-
-
-
+  //When looking at My Profile tab, change the post and profile state to 'mine'
   componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       AsyncStorage.setItem('@postsState', 'mine');
@@ -36,18 +30,11 @@ class MyProfileStack extends Component {
     });
   }
 
-
-
-
-
-
-
-
   render() {
     return (
-      <Stack.Navigator>
+      //Conatins all accessible stack screens for My Profile tab
+      <Stack.Navigator initialRouteName="Profile">
         <Stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
-        <Stack.Screen name="MyPosts" component={MyPosts} options={{headerShown: false}}/>
         <Stack.Screen name="MyPost" component={MyPost} options={{headerShown: false}}/>
         <Stack.Screen name="FriendRequests" component={FriendRequests} options={{headerShown: false}}/>
         <Stack.Screen name="SeeFriends" component={SeeFriends} options={{headerShown: false}}/>
@@ -58,9 +45,9 @@ class MyProfileStack extends Component {
       </Stack.Navigator>
     );
   }
-
 }
 
+//Styling
 const styles = StyleSheet.create({
 });
 

@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { Button, Text } from 'react-native';
+import { Button, Text, Alert, Modal, StyleSheet, Pressable, View } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Logout extends Component{
 
+  state = {
+    modalVisible: false
+  };
 
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
 
 
 
@@ -33,21 +39,70 @@ class Logout extends Component{
           })
     }
 
-    render(){
-        return (
-            <ScrollView>
-                <Text>
-                  Logout screen
-                </Text>
 
-                <Button
-                    title="Log Out"
-                    color="darkblue"
-                    onPress={() => this.logout()}
-                />
-            </ScrollView>
-        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    render(){
+      const { modalVisible } = this.state;
+      return (
+        <View  style={styles.container}>
+
+
+
+          <Pressable onPress={() => this.setModalVisible(true)}>
+            <Text>Log Out</Text>
+          </Pressable>
+
+
+          <Modal animationType="slide" transparent={false} visible={modalVisible} onRequestClose={() => {this.setModalVisible(!modalVisible);}}>
+            <View style={styles.popUpContainer}>
+              <Text>Are you sure you want to log out?</Text>
+              <Pressable onPress={() => this.logout()}>
+                <Text>Log Out</Text>
+              </Pressable>
+              <Pressable onPress={() => this.setModalVisible(!modalVisible)}>
+                <Text>Stay</Text>
+              </Pressable>
+            </View>
+          </Modal>
+
+
+
+
+
+        </View>
+      );
     }
 }
+
+const styles = StyleSheet.create({
+  popUpContainer: {
+    backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  container: {
+    backgroundColor: "red",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+});
 
 export default Logout;

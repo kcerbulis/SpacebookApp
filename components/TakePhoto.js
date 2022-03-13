@@ -7,6 +7,7 @@ class TakePhoto extends Component{
   constructor(props){
     super(props);
 
+    //Stores picture capture data
     this.state = {
       hasPermission: null,
       type: Camera.Constants.Type.back
@@ -14,10 +15,14 @@ class TakePhoto extends Component{
   }
 
   async componentDidMount(){
+    //Asks for device permission to tale photos
     const { status } = await Camera.requestCameraPermissionsAsync();
+    //Updates permission state
     this.setState({hasPermission: status === 'granted'});
   }
 
+  //Sets camera option and passes it into takePictureAsync function
+  //Once picture takes, data sent to server with sendToServer function
   takePicture = async() => {
     if(this.camera){
       const options = {
@@ -30,14 +35,16 @@ class TakePhoto extends Component{
   }
 
   sendToServer = async (data) => {
-    //Gets user session token
+    //Gets session token
     const value = await AsyncStorage.getItem('@session_token');
-    //Gets user ID
+    //Gets session ID
     const id = await AsyncStorage.getItem('@session_id');
 
+    //Converts data into base64 and turns in into blob to send to server as body
     let res = await fetch(data.base64);
     let blob = await res.blob()
 
+    //POST request to send picture to server
     return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
           method: "POST",
           headers: {
@@ -47,8 +54,26 @@ class TakePhoto extends Component{
           body: blob
         })
         .then((response) => {
-          alert("New Picture Uploaded!");
-          this.props.navigation.navigate("Profile")
+          //Error handling
+          if(response.status == (200 || 201)){
+            alert("Photo Uploaded")
+            this.props.navigation.navigate("Profile")
+          }else if(response.status == 400){
+            alert("Bad Request, Please Try Again");
+            this.props.navigation.goBack();
+          }else if(response.status == 401){
+            alert("You Are Unauthorised to Do This")
+            this.props.navigation.navigate("Login");
+          }else if(response.status == 404){
+            alert("User Not Found, Please Try Again");
+            this.props.navigation.goBack();
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
+            this.props.navigation.goBack();
+          }else{
+            alert("An Uncaught Error Has Occurred :(\nPlease Try Again Later");
+            this.props.navigation.goBack();
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -56,43 +81,21 @@ class TakePhoto extends Component{
   }
 
   render(){
+    //If camera access is granted, displays photo taking mode
     if(this.state.hasPermission){
       return(
         <View style={styles.container}>
-
-
-
-
-
-          <Camera
-           style={styles.camera}
-           type={this.state.type}
-           ref={ref => this.camera = ref}
-         >
-
-
-
-
-
+          <Camera style={styles.camera} type={this.state.type} ref={ref => this.camera = ref}>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  this.takePicture();
-                }}>
-                <Text style={styles.text}> Snap </Text>
+              <TouchableOpacity style={styles.button} onPress={() => {this.takePicture();}}>
+                <Text style={styles.text}>Snap</Text>
               </TouchableOpacity>
             </View>
           </Camera>
-
-
-
-
-
-
         </View>
       );
     }else{
+      //If camera access is denied
       return(
         <Text>No access to camera</Text>
       );
@@ -100,8 +103,7 @@ class TakePhoto extends Component{
   }
 }
 
-export default TakePhoto;
-
+//Styling
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,3 +127,5 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+export default TakePhoto;

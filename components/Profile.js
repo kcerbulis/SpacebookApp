@@ -20,6 +20,8 @@ class Profile extends Component {
       profileState: '',
       listData: [],
       isFriend: false,
+      myName: '',
+      userName: ''
 
     }
   }
@@ -31,6 +33,7 @@ class Profile extends Component {
     //Allows new profile photo to be seen immedietly after upload
     this.focus = this.props.navigation.addListener('focus', () => {
       this.updateProfilePhoto();
+      this.loadMyName();
     });
 
   }
@@ -48,8 +51,155 @@ class Profile extends Component {
       console.log("Looking at NOT my profile")
       this.checkIfFriend();
       this.displayProfilePhotoUser();
+      this.loadUserName();
+    }
+    else{
+      this.loadMyName();
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //Displays full name in profile
+  loadMyName = async () => {
+
+    //Gets user session token
+    const value = await AsyncStorage.getItem('@session_token');
+    //Gets user ID
+    const id = await AsyncStorage.getItem('@session_id');
+
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
+          'headers': {
+            'X-Authorization':  value
+          }
+        })
+        .then((response) => {
+            if(response.status === 200){
+              return response.json()
+            }else if(response.status === 401){
+              alert("Unauthorised! You need to log in!")
+              this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+              alert("Couldn't Find Profile Information!")
+            }else if(response.status === 500){
+              alert("Server Error - Not Your Fault ;)")
+              this.props.navigation.navigate("Login");
+            }else{
+                alert("An uncaught error has occored");
+            }
+        })
+        .then((responseJson) => {
+
+          const myName = responseJson.first_name + " " + responseJson.last_name;
+
+          this.setState({
+            isLoading: false,
+            myName: myName
+          })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //Displays full name in profile
+  loadUserName = async () => {
+    //Gets user session token
+    const value = await AsyncStorage.getItem('@session_token');
+    //Gets user ID
+    const id = await AsyncStorage.getItem('@user_id');
+
+
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
+          'headers': {
+            'X-Authorization':  value
+          }
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 401){
+              alert("You need to log in")
+              this.props.navigation.navigate("Login");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then((responseJson) => {
+          const userName = responseJson.first_name + " " + responseJson.last_name;
+          this.setState({
+            isLoading: false,
+            userName: userName
+          })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   checkIfFriend = async () => {
     //Gets user session token
@@ -222,6 +372,7 @@ class Profile extends Component {
         return(
           <ScrollView>
             <Image source={{uri: this.state.photo,}} style={{width: 400,height: 400}}/>
+            <Text>{this.state.myName}</Text>
             <Button title="My Post" onPress={() => this.props.navigation.navigate("Posts")}/>
             <Button title="Friend Request" onPress={() => this.props.navigation.navigate("FriendRequests")}/>
             <Button title="Friend List" onPress={() => this.props.navigation.navigate("SeeFriends")}/>
@@ -235,6 +386,7 @@ class Profile extends Component {
           return(
             <ScrollView>
               <Image source={{uri: this.state.photoUser,}} style={{width: 400,height: 400}}/>
+              <Text>{this.state.userName}</Text>
               <Button title="Post" onPress={() => this.goToUserPosts()}/>
               <Button title="View Friends" onPress={() => this.props.navigation.navigate("SeeUserFriends")}/>
               <Button title="User Info" onPress={() => this.props.navigation.navigate("UserInfo")}/>
@@ -246,6 +398,7 @@ class Profile extends Component {
           return(
             <ScrollView>
               <Image source={{uri: this.state.photoUser,}} style={{width: 400,height: 400}}/>
+              <Text>{this.state.userName}</Text>
               <Button title="User Info" onPress={() => this.props.navigation.navigate("UserInfo")}/>
               <Button title="Send Friend Request" onPress={() => this.sendFriendRequest()}/>
               <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
