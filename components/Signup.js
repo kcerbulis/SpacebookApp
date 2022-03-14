@@ -16,35 +16,44 @@ class Signup extends Component{
 
     //Creates new user account with credentials
     signup = () => {
+      //Signup request to server
+      return fetch("http://localhost:3333/api/1.0.0/user", {
+          method: 'post',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.state)
+      })
+      .then((response) => {
+        console.log(response.status)
+        //Error handling
+        if(response.status == 201){
+          alert("Account Created");
+          this.props.navigation.navigate("Login");
+          return response.json()
+        }else if(response.status == 400){
+          alert("Bad Request\nPlease Check Your Input and Try Again")
+        }else if(response.status == 401){
+            alert("Unauthorised to Create Account\nPlease Try Again Later")
+        }else if(response.status == 403){
+            alert("Forbidden to Create Account\nPlease Try Again Later")
+        }else if(response.status == 404){
+            alert("Not Found\nPlease Try Again Later")
+        }else if(response.status == 500){
+          alert("A Server Error Has Occurred, Please Try Again Later");
+        }else{
+            throw "Uncought Error Occured";
+        }
+      })
+      .then((responseJson) => {
+          console.log("User created with ID: ", responseJson);
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+    }
 
-
-          return fetch("http://localhost:3333/api/1.0.0/user", {
-              method: 'post',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(this.state)
-          })
-          .then((response) => {
-              if(response.status === 201){
-                  return response.json()
-                  console.log("This is resoponse.json = " + response.json())
-              }else if(response.status === 400){
-                  throw 'Failed validation';
-              }else{
-                  throw 'Something went wrong';
-              }
-          })
-          .then((responseJson) => {
-                 console.log("User created with ID: ", responseJson);
-                 this.props.navigation.navigate("Login");
-
-          })
-          .catch((error) => {
-              console.log(error);
-          })
-      }
-
+    //Signup text input fields, updates state on key change
     render(){
         return (
             <ScrollView>

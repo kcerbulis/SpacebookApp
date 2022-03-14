@@ -7,69 +7,74 @@ class FriendRequests extends Component {
   constructor(props){
     super(props);
 
+    //Stores information on friend requests
     this.state = {
+      requestsPending: false,
       isLoading: true,
       friendRequestData: []
     }
   }
 
+  //Loads friend requests when page focus changes
   componentDidMount() {
-    console.log("DELETE ME")
-    this.loadFriendRequests();
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.loadFriendRequests();
+    });
   }
 
-
+  //Retrieves friend requests from server
   loadFriendRequests = async () => {
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
-
+    //Server friend request request
     return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
           'headers': {
             'X-Authorization':  value
           }
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              alert("You need to log in")
+            console.log(response.status)
+            //Error handling
+            if(response.status == 200){
+              return response.json()
+            }else if(response.status == 400){
+              alert("Bad Request\nPlease Try Again")
+            }else if(response.status == 401){
+              alert("Unauthorised\nPlease Try Again Later")
               this.props.navigation.navigate("Login");
+            }else if(response.status == 403){
+              alert("Forbidden\nPlease Try Again Later")
+            }else if(response.status == 404){
+              alert("Not Found\nPlease Try Again Later")
+            }else if(response.status == 500){
+              alert("A Server Error Has Occurred, Please Try Again Later");
             }else{
-                throw 'Something went wrong';
+                throw "Uncought Error Occured";
             }
         })
         .then((responseJson) => {
-          console.log(responseJson)
           this.setState({
             isLoading: false,
             friendRequestData: responseJson
           })
+          //If friend requests present
+          if(this.state.friendRequestData.length > 0){
+            this.setState({
+              requestsPending: true
+            })
+          }
         })
         .catch((error) => {
             console.log(error);
         })
-        console.log("Reloading friend request")
   }
 
-
-
-
-
-
-
-
-
-
-
-
   acceptFriendRequest = async (requestingUserID) => {
-
+    //Shows loading indicator
     this.state.isLoading = true;
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
-
+    //Server request to accept friendship request
     return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + requestingUserID, {
           method: 'post',
           headers: {
@@ -78,41 +83,45 @@ class FriendRequests extends Component {
           }
       })
       .then((response) => {
-          //Reloads friend request list
+        //Error handling
+        console.log(response.status)
+        if(response.status == 200){
+          alert("Friend Added")
           this.loadFriendRequests()
-          if(response.status === 201){
-              return response.json()
-          }else if(response.status === 400){
-              throw 'Failed validation';
-          }else{
-              throw 'Something went wrong';
-          }
+          return response.json()
+        }else if(response.status == 400){
+          alert("Bad Request\nPlease Try Again")
+        }else if(response.status == 401){
+            alert("Unauthorised\nPlease Try Again Later")
+            this.props.navigation.navigate("Login");
+        }else if(response.status == 403){
+            alert("Forbidden\nPlease Try Again Later")
+        }else if(response.status == 404){
+            alert("Not Found\nPlease Try Again Later")
+        }else if(response.status == 500){
+          alert("A Server Error Has Occurred, Please Try Again Later");
+        }else{
+            throw "Uncought Error Occured";
+        }
       })
       .then((responseJson) => {
-        console.log(responseJson)
+        //Stops loading indicator, reloads request list
+        this.setState({
+          isLoading: false,
+        })
+        this.loadFriendRequests()
       })
       .catch((error) => {
           console.log(error);
       })
   }
 
-
-
-
-
-
-
-
-
   declineFriendReques = async (requestingUserID) => {
-
+    //Shows loading indicator
     this.state.isLoading = true;
-
-    console.log("Friend Request for user " + requestingUserID + " Declined")
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
-
+    //Server request to decline friendship request
     return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + requestingUserID, {
           method: 'delete',
           headers: {
@@ -121,41 +130,53 @@ class FriendRequests extends Component {
           }
       })
       .then((response) => {
-          //Reloads friend request list
+          console.log(response.status)
           this.loadFriendRequests()
-          if(response.status === 201){
-              return response.json()
-          }else if(response.status === 400){
-              throw 'Failed validation';
+          //Error handling
+          if(response.status == 200){
+	          alert("Friend Request Declined")
+            return response.json()
+          }else if(response.status == 400){
+            alert("Bad Request\nPlease Try Again")
+          }else if(response.status == 401){
+              alert("Unauthorised\nPlease Try Again Later")
+              this.props.navigation.navigate("Login");
+          }else if(response.status == 403){
+              alert("Forbidden\nPlease Try Again Later")
+          }else if(response.status == 404){
+              alert("Not Found\nPlease Try Again Later")
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
           }else{
-              throw 'Something went wrong';
+              throw "Uncought Error Occured";
           }
       })
       .then((responseJson) => {
-             this.loadFriendRequests();
-             this.setState({
-               isLoading: false,
-             })
-
+        //Stops loading indicator, reloads request list
+         this.setState({
+           isLoading: false,
+         })
+         this.loadFriendRequests();
       })
       .catch((error) => {
           console.log(error);
       })
   }
 
+  //If friend requests are present, display buttons to accept or deline it
   render() {
-
     if(this.state.isLoading){
       return(
-        <View
-          style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+        <View style={{flex: 1,flexDirection: 'column',justifyContent: 'center',alignItems: 'center',}}>
           <Text>Loading</Text>
         </View>
+      );
+    }if (this.state.requestsPending == false){
+      return (
+        <ScrollView>
+          <Text>No Pending Friend Requests</Text>
+          <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
+        </ScrollView>
       );
     }else{
       return (
