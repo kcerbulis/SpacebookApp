@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Text, TextInput, View, Button, StyleSheet, Alert, ScrollView, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class SearchStack extends Component {
+class SearchUsers extends Component {
   constructor(props){
     super(props);
 
-
+    //Stores data about users and querying user results
     this.state = {
       isLoading: true,
       searchText: '',
@@ -21,105 +21,51 @@ class SearchStack extends Component {
     });
   }
 
-
-
-
-
-
-
+  //Navigates to appropriate user profile
   navigateToProfile = async (userID) => {
-
-
+    //Sets async storage profileState to 'user' and save user ID
     await AsyncStorage.setItem('@user_id', userID);
-    await AsyncStorage.setItem('@userT_id', userID);
-
-    const test = await AsyncStorage.getItem('@user_id');
-
     await AsyncStorage.setItem('@profileState', 'user');
-
-
-    console.log("Navigating to user " + test)
-
-
+    //Navigates to profile
     this.props.navigation.navigate("Profile")
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  queryUsers = async () => {
-
-
-    let queryText = this.state.searchText;
-
-    console.log(queryText)
-
-    //Gets user session token
-    const value = await AsyncStorage.getItem('@session_token');
-
-    return fetch("http://localhost:3333/api/1.0.0/search?q=" + queryText, {
-          'headers': {
-            'X-Authorization':  value
-          }
-    })
-    .then((response) => {
-        if(response.status === 200){
-            return response.json()
-        }else if(response.status === 401){
-          alert("You need to log in")
-          this.props.navigation.navigate("Login");
-        }else{
-            throw 'Something went wrong';
-        }
-    })
-    .then((responseJson) => {
-      console.log(responseJson)
-      this.setState({
-        isLoading: false,
-        friendData: responseJson
-      })
-    })
-    .catch((error) => {
-        console.log(error);
-    })
-  }
-
-
-
+  //Returns a list of all users, passed into state
   loadUsers = async () => {
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
-
+    //User list server request
     return fetch("http://localhost:3333/api/1.0.0/search", {
           'headers': {
             'X-Authorization':  value
           }
     })
     .then((response) => {
-        if(response.status === 200){
-            return response.json()
-        }else if(response.status === 401){
-          alert("You need to log in")
+      console.log(response.status)
+      //Error handling
+      if(response.status == 200){
+        return response.json()
+      }else if(response.status == 400){
+        alert("Bad Request\nPlease Try Again Later")
+        this.props.navigation.goBack();
+      }else if(response.status == 401){
+          alert("Unauthorised\nPlease Log In")
           this.props.navigation.navigate("Login");
-        }else{
-            throw 'Something went wrong';
-        }
+      }else if(response.status == 403){
+          alert("Forbidden\nYou Can’t See All Users");
+          this.props.navigation.goBack();
+      }else if(response.status == 404){
+          alert("Users Not Found\nPlease Try Again Later")
+          this.props.navigation.goBack();
+      }else if(response.status == 500){
+        alert("A Server Error Has Occurred, Please Try Again Later");
+        this.props.navigation.goBack();
+      }else{
+          throw "Uncought Error Occured";
+      }
     })
     .then((responseJson) => {
-      console.log(responseJson)
+      //Passes response to state, stops loading view
       this.setState({
         isLoading: false,
         friendData: responseJson
@@ -130,9 +76,54 @@ class SearchStack extends Component {
     })
   }
 
+  //Searches list of all users, passes results to state
+  queryUsers = async () => {
+    //Creates query string variable
+    let queryText = this.state.searchText;
+    //Gets user session token
+    const value = await AsyncStorage.getItem('@session_token');
+    //Query users server request
+    return fetch("http://localhost:3333/api/1.0.0/search?q=" + queryText, {
+          'headers': {
+            'X-Authorization':  value
+          }
+    })
+    .then((response) => {
+      console.log(response.status)
+      //Error handling
+      if(response.status == 200){
+        return response.json()
+      }else if(response.status == 400){
+        alert("Bad Request\nPlease Try Again Later")
+      }else if(response.status == 401){
+          alert("Unauthorised\nPlease Log In")
+          this.props.navigation.navigate("Login");
+      }else if(response.status == 403){
+          alert("Forbidden\nYou Can’t Search Users");
+          this.props.navigation.goBack();
+      }else if(response.status == 404){
+          alert("User/s Not Found\nPlease Try Again")
+      }else if(response.status == 500){
+        alert("A Server Error Has Occurred, Please Try Again Later");
+      }else{
+          throw "Uncought Error Occured";
+      }
+    })
+    .then((responseJson) => {
+      //Passes response to state, stops loading view
+      this.setState({
+        isLoading: false,
+        friendData: responseJson
+      })
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+  }
 
+  //If loading state is true, show loading screen
+  //Allows to veiw, search and inspect all other users profiles
   render() {
-
     if(this.state.isLoading){
       return(
         <View
@@ -146,46 +137,20 @@ class SearchStack extends Component {
         </View>
       );
     }else{
-
-    return (
-      <ScrollView>
-
-
-        <TextInput
-          placeholder='Search user by name...'
-          onChangeText={value => this.setState({searchText: value})}
-          value={this.state.searchText}
-        />
-
-        <Button title="Search" onPress={() => this.queryUsers()}/>
-
-
-        <View>
-          <FlatList
-            initialNumToRender={10}
-            windowSize={10}
-            data={this.state.friendData}
-            renderItem={({item}) => (
-                <View>
-                  <Text>{item.user_givenname} {item.user_familyname}</Text>
-
-                  <Button
-                    onPress={() => this.navigateToProfile(item.user_id)}
-                    title="View Profile"
-                  />
-                </View>
-            )}
-            keyExtractor={(item,index) => item.user_id.toString()}
-              />
-        </View>
-
-
-
-
-
-        <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
-      </ScrollView>
-      );
+      return (
+        <ScrollView>
+          <TextInput placeholder='Search user by name...' onChangeText={value => this.setState({searchText: value})} value={this.state.searchText}/>
+          <Button title="Search" onPress={() => this.queryUsers()}/>
+          <View>
+            <FlatList initialNumToRender={10} windowSize={10} data={this.state.friendData} renderItem={({item}) => (
+                  <View>
+                    <Text>{item.user_givenname} {item.user_familyname}</Text>
+                    <Button onPress={() => this.navigateToProfile(item.user_id)} title="View Profile"/>
+                  </View>
+            )} keyExtractor={(item,index) => item.user_id.toString()}/>
+          </View>
+        </ScrollView>
+        );
     }
   }
 }
@@ -193,4 +158,4 @@ class SearchStack extends Component {
 const styles = StyleSheet.create({
 });
 
-export default SearchStack
+export default SearchUsers

@@ -7,6 +7,7 @@ class UpdateMyInfo extends Component{
   constructor(props){
     super(props);
 
+    //Store current user info and info to update and loading state
     this.state = {
       isLoading: true,
       userInfo: [],
@@ -16,38 +17,49 @@ class UpdateMyInfo extends Component{
       updatedPassword: "",
     }
   }
-
+  //Loads user information when page loads
   componentDidMount(){
     this.loadInformation();
   }
 
+  //Retrieves user information and passes to state
   loadInformation = async () => {
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
     //Gets user ID
     const id = await AsyncStorage.getItem('@session_id');
-
+    //Get user information server request
     return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
           'headers': {
             'X-Authorization':  value
           }
         })
         .then((response) => {
-            if(response.status === 200){
+            console.log(response.status)
+            //Error handling
+            if(response.status == 200){
               return response.json()
-            }else if(response.status === 401){
-              alert("Unauthorised! You need to log in!")
-              this.props.navigation.navigate("Login");
-            }else if(response.status === 404){
-              alert("Couldn't Find Profile Information!")
-            }else if(response.status === 500){
-              alert("Server Error - Not Your Fault ;)")
-              this.props.navigation.navigate("Login");
+            }else if(response.status == 400){
+              alert("Bad Request\nPlease Try Again")
+              this.props.navigation.goBack();
+            }else if(response.status == 401){
+                alert("Unauthorised\nPlease Try Again Later")
+                this.props.navigation.navigate("Login");
+            }else if(response.status == 403){
+                alert("Forbidden\nCan’t See This Users Information ");
+                this.props.navigation.goBack();
+            }else if(response.status == 404){
+                alert("User Information Not Found\nPlease Try Again Later")
+                this.props.navigation.goBack();
+            }else if(response.status == 500){
+              alert("A Server Error Has Occurred, Please Try Again Later");
+              this.props.navigation.goBack();
             }else{
-                alert("An uncaught error has occored");
+                throw "Uncought Error Occured";
             }
         })
         .then((responseJson) => {
+          //Passes result into state, stops loading view
           this.setState({
             isLoading: false,
             userInfo: responseJson
@@ -58,6 +70,7 @@ class UpdateMyInfo extends Component{
         })
   }
 
+  //Sends update request with updated info, passes it to state
   updateUserInformation = async () => {
     //Checks if text field has changes
     //If no change, sets original state value to update
@@ -74,7 +87,6 @@ class UpdateMyInfo extends Component{
     if (Object.keys(this.state.updatedPassword).length == 0) {
       this.state.updatedPassword = this.state.userInfo.first_name;
     }
-
     //Formats body to send to server
     const body = {
       first_name: this.state.updatedName,
@@ -82,11 +94,11 @@ class UpdateMyInfo extends Component{
       email: this.state.updatedEmail,
       password: this.state.updatedPassword
     }
-
     //Gets my user token and ID
     const userID = await AsyncStorage.getItem('@session_id');
     const value = await AsyncStorage.getItem('@session_token');
 
+    //Patch request to update user information
     return fetch("http://localhost:3333/api/1.0.0/user/" + userID, {
       method: 'PATCH',
       headers: {
@@ -97,46 +109,40 @@ class UpdateMyInfo extends Component{
     })
     //Result and error handling
     .then((response) => {
+        //Error handling
         if(response.status === 200){
-            alert("Information Updated!")
+            alert("Information Updated");
+            this.props.navigation.goBack()
             return response.json()
         }else if(response.status === 400){
           alert("Incorrect Format, Please Try Again!")
         }else if(response.status === 401){
-          alert("Unauthorised! You need to log in!")
+          alert("Unauthorised\nYou Need to Log In")
           this.props.navigation.navigate("Login");
         }else if(response.status === 403){
-          alert("You are not allowed to change this information")
+          alert("You Are Not Allowed to Change This Information")
           this.props.navigation.goBack();
         }else if(response.status === 404){
-          alert("Couldn't Find Profile Information!")
+          alert("Couldn't Find Profile Information")
+          this.props.navigation.goBack();
         }else if(response.status === 500){
-          alert("Server Error - Not Your Fault ;)")
-          this.props.navigation.navigate("Login");
+          alert("A Server Error Has Occurred, Please Try Again Later");
+          this.props.navigation.goBack();
         }else{
-            alert("An uncaught error has occored");
+            throw "Uncought Error Occured";
         }
-    })
-    .then((responseJson) => {
-      console.log("No Error")
-      this.props.navigation.goBack()
     })
     .catch((error) => {
         console.log(error);
-        this.props.navigation.goBack()
     })
   }
 
+  //If loading state is true, show loading screen
+  //Text fields show current informtaion, capable of changing text and submitting it
   render(){
     if(this.state.isLoading){
       return(
-        <View
-          style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+        <View style={{flex: 1,flexDirection: 'column',justifyContent: 'center',alignItems: 'center',}}>
           <Text>Loading</Text>
         </View>
       );

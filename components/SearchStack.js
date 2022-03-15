@@ -37,7 +37,7 @@ class SearchStack extends Component {
         <Stack.Screen name="UserInfo" options={{headerShown:false}} component={UserInfo} />
         <Stack.Screen name="UserPost" options={{headerShown:false}} component={UserPost} />
         <Stack.Screen name="Profile" options={{headerShown:false}} component={Profile} />
-        <Stack.Screen name="PostsUser" options={{headerShown:false}} component={Posts} />
+        <Stack.Screen name="Posts" options={{headerShown:false}} component={Posts} />
       </Stack.Navigator>
     )
   }

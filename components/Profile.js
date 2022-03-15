@@ -7,8 +7,6 @@ import { Camera } from 'expo-camera';
 
 //Main class for displaying Profile content
 class Profile extends Component {
-
-
   constructor(props){
     super(props);
 
@@ -22,26 +20,22 @@ class Profile extends Component {
       isFriend: false,
       myName: '',
       userName: ''
-
     }
   }
 
   componentDidMount(){
     //Checks if Mine or User profile
     this.checkWhosProfile();
-
-    //Allows new profile photo to be seen immedietly after upload
+    //Allows new profile photo and name to be seen immedietly after update
     this.focus = this.props.navigation.addListener('focus', () => {
       this.updateProfilePhoto();
       this.loadMyName();
     });
-
   }
 
   checkWhosProfile = async () => {
     //Stores who's profile needs to be displayed
     let profileState = await AsyncStorage.getItem('@profileState');
-
     //Sets state of whos profile looking at
     await this.setState({
       profileState: profileState
@@ -53,63 +47,41 @@ class Profile extends Component {
       this.displayProfilePhotoUser();
       this.loadUserName();
     }
-    else{
-      this.loadMyName();
-    }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //Displays full name in profile
   loadMyName = async () => {
-
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
     //Gets user ID
     const id = await AsyncStorage.getItem('@session_id');
-
+    //User information server request
     return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
           'headers': {
             'X-Authorization':  value
           }
         })
         .then((response) => {
+            //Error handling
             if(response.status === 200){
               return response.json()
             }else if(response.status === 401){
               alert("Unauthorised! You need to log in!")
               this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+              alert("Forbidden To See Profile Name")
             }else if(response.status === 404){
               alert("Couldn't Find Profile Information!")
             }else if(response.status === 500){
-              alert("Server Error - Not Your Fault ;)")
-              this.props.navigation.navigate("Login");
+              alert("A Server Error Has Occurred, Please Try Again Later");
             }else{
                 alert("An uncaught error has occored");
             }
         })
         .then((responseJson) => {
-
+          //Sets name variable from response
           const myName = responseJson.first_name + " " + responseJson.last_name;
-
+          //Passes name into state
           this.setState({
             isLoading: false,
             myName: myName
@@ -120,48 +92,39 @@ class Profile extends Component {
         })
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //Displays full name in profile
   loadUserName = async () => {
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
     //Gets user ID
     const id = await AsyncStorage.getItem('@user_id');
-
-
+    //User information server request
     return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
           'headers': {
             'X-Authorization':  value
           }
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              alert("You need to log in")
-              this.props.navigation.navigate("Login");
-            }else{
-                throw 'Something went wrong';
-            }
+          //Error handling
+          if(response.status === 200){
+            return response.json()
+          }else if(response.status === 401){
+            alert("Unauthorised! You need to log in!")
+            this.props.navigation.navigate("Login");
+          }else if(response.status === 403){
+            alert("Forbidden To See Profile Name")
+          }else if(response.status === 404){
+            alert("Couldn't Find Profile Information!")
+          }else if(response.status === 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
+          }else{
+              alert("An uncaught error has occored");
+          }
         })
         .then((responseJson) => {
+          //Sets name variable from response
           const userName = responseJson.first_name + " " + responseJson.last_name;
+          //Passes name into state
           this.setState({
             isLoading: false,
             userName: userName
@@ -170,37 +133,9 @@ class Profile extends Component {
         .catch((error) => {
             console.log(error);
         })
-
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  //Checks if user is friend
   checkIfFriend = async () => {
     //Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
@@ -214,6 +149,7 @@ class Profile extends Component {
           }
         })
         .then((response) => {
+            //Simple error handling
             if(response.status === 403){
               //NOT FRIEND = Update State
               this.setState({
@@ -226,7 +162,6 @@ class Profile extends Component {
                 isFriend: true
               })
             )
-            console.log("This is my friend = " + this.state.isFriend)
         })
   }
 
@@ -235,6 +170,7 @@ class Profile extends Component {
     this.displayProfilePhoto();
   }
 
+  //Gets profile photo from server and passes into state for display
   displayProfilePhoto = async () => {
     //Gets my user ID
     const userID = await AsyncStorage.getItem('@session_id');
@@ -259,8 +195,7 @@ class Profile extends Component {
         photo: data,
         isLoading: false
       });
-    }
-    )
+    })
     .catch((err) => {
       console.log("error", err)
     });
@@ -311,50 +246,44 @@ class Profile extends Component {
           }
       })
       .then((response) => {
-          if(response.status === 200){
-              alert("Friend Request Sent")
-              return response.json()
-          }else if(response.status === 201){
-              alert("Friend Request Sent")
-              return response.json()
-          }else if(response.status === 401){
-              alert("Unauthorised")
-          }else if(response.status === 403){
+          console.log(response.status)
+          //Error handling
+          if(response.status == (201)){
+            alert("Friend Request Sent")
+            return response.json()
+          }else if(response.status == 400){
+            alert("Bad Request\nPlease Try Again")
+          }else if(response.status == 401){
+              alert("Unauthorised To Send Request\nPlease Try Again Later")
+              this.props.navigation.navigate("Login");
+          }else if(response.status == 403){
               alert("Friend Request Pending")
-          }else if(response.status === 404){
-              alert("User Not Found")
-          }
-          else if(response.status === 500){
-              alert("Server Error")
+          }else if(response.status == 404){
+              alert("User Not Found\nPlease Try Again Later")
+              this.props.navigation.goBack();
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
           }else{
-              throw 'Something went wrong';
+              throw "Uncought Error Occured";
           }
-      })
-      .then((responseJson) => {
       })
       .catch((error) => {
           console.log(error);
       })
   }
 
+  //Navigates to user posts
   goToUserPosts = async () => {
-    console.log("Taken to user posts")
-
+    //Sets async postState to 'user'
     await AsyncStorage.setItem('@postsState', 'user');
-
-    const userID = await AsyncStorage.getItem('@user_id');
-    const postState = await AsyncStorage.getItem('@postsState');
-
-    console.log(userID + " " + postState)
-
-    this.props.navigation.navigate("PostsUser");
+    //Navigates to
+    this.props.navigation.navigate("Posts");
   }
 
-
-
+  //If loading state is true, show loading screen
+  //Displays different options depending if looking at mine or users profile
+  //Displays different options depending if looking at a friends profile
   render() {
-
-
       if(this.state.isLoading){
         return(
           <View
@@ -367,7 +296,6 @@ class Profile extends Component {
             <Text>Loading</Text>
           </View>
         );
-
       }else if (this.state.profileState == 'mine') {
         return(
           <ScrollView>
@@ -380,7 +308,6 @@ class Profile extends Component {
           </ScrollView>
         )
       }
-
       else if (this.state.profileState == 'user') {
         if(this.state.isFriend) {
           return(
@@ -408,7 +335,6 @@ class Profile extends Component {
         }
       }
   }
-
 }
 
 const styles = StyleSheet.create({

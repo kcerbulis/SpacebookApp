@@ -125,6 +125,10 @@ class MyPost extends Component{
               throw "Uncought Error Occured";
           }
         })
+        .then((responseJson) => {
+          //Loading view disabled
+          this.state.isLoading = false;
+        })
         .catch((error) => {
             console.log(error);
         })
@@ -232,8 +236,7 @@ class MyPost extends Component{
       })
    }
 
-
-
+   //Unlike an individual post
    unlikePost = async () => {
      //Gets token, post and user IDs
      const userPostID = await AsyncStorage.getItem('@post_id');

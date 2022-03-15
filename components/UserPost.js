@@ -7,6 +7,7 @@ class UserPost extends Component{
     constructor(props){
         super(props);
 
+        //Stores information about user post and loading state
         this.state = {
             isLoading: true,
             postData: [],
@@ -15,38 +16,78 @@ class UserPost extends Component{
             myPost: false
         }
     }
-
-
-
-
+    //Loads user post when page is loaded
     componentDidMount() {
       this.loadPost();
-      console.log("In a user post")
     }
 
+    //Loads user posts
+    loadPost = async () => {
+      //Gets token, post and user IDs
+      const userPostID = await AsyncStorage.getItem('@post_id');
+      const userID = await AsyncStorage.getItem('@user_id');
+      const value = await AsyncStorage.getItem('@session_token');
+      //Get post server request
+      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID, {
+            'headers': {
+              'X-Authorization':  value
+            }
+          })
+          .then((response) => {
+            console.log(response.status)
+            //Error handling
+            if(response.status == 200){
+              return response.json()
+            }else if(response.status == 400){
+              alert("Bad Request\nPlease Try Again")
+              this.props.navigation.goBack();
+            }else if(response.status == 401){
+                alert("Unauthorised\nPlease Try Again Later")
+                this.props.navigation.navigate("Login");
+            }else if(response.status == 403){
+                alert("Forbidden\nYou Can Only View the Posts of Yourself or Your Friends");
+                this.props.navigation.goBack();
+            }else if(response.status == 404){
+                alert("Post Not Found\nPlease Try Again Later")
+                this.props.navigation.goBack();
+            }else if(response.status == 500){
+              alert("A Server Error Has Occurred, Please Try Again Later");
+              this.props.navigation.goBack();
+            }else{
+                throw "Uncought Error Occured";
+            }
+          })
+          .then((responseJson) => {
+            //Stops loading view and passes response to state for display
+            this.setState({
+              isLoading: false,
+              postData: responseJson
+            })
+            //Checks whos post it is, updates state
+            this.checkAuthor();
+          })
+          .catch((error) => {
+              console.log(error);
+          })
+    }
 
-
+    //Updates post, saves response in state
     updatePost = async (requestingUserID) => {
-
+      //Checks if any content to update
       if (Object.keys(this.state.updatePostContent).length == 0) {
         alert("Nothing to update")
       }
       else{
+        //Retrieves token, post and user ID
         const postID = await AsyncStorage.getItem('@post_id');
         const userID = await AsyncStorage.getItem('@user_id');
         const value = await AsyncStorage.getItem('@session_token');
-
-        console.log("The post ID is " + postID)
-        console.log("The user ID is " + userID)
-        console.log("The session token is " + value)
-
+        //Sets update text state to originas post state
         this.state.postData.text = this.state.updatePostContent
-
+        //Sets state as request body
         const body = this.state.postData
 
-
-
-
+        //Update post server request
         return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID, {
           method: 'PATCH',
           headers: {
@@ -56,55 +97,44 @@ class UserPost extends Component{
           body: JSON.stringify(body)
       })
       .then((response) => {
-          console.log(response.status)
-          this.props.navigation.goBack();
-          alert("Post Updated")
-          if(response.status === 200){
+            console.log(response.status)
+            //Error handling
+            if(response.status == 200){
+              alert("Post Updated")
+              this.props.navigation.goBack();
               return response.json()
-          }else if(response.status === 400){
-              throw 'Failed validation';
-          }else{
-              throw 'Something went wrong ' + response.status;
-          }
-      })
-      .then((responseJson) => {
-        console.log("Need to go back")
+            }else if(response.status == 400){
+              alert("Bad Request\nPlease Try Again")
+              this.props.navigation.goBack();
+            }else if(response.status == 401){
+                alert("Unauthorised\nPlease Try Again Later")
+                this.props.navigation.navigate("Login");
+            }else if(response.status == 403){
+                alert("Forbidden\nYou Can Only Update Your Own Posts");
+                this.props.navigation.goBack();
+            }else if(response.status == 404){
+                alert("Post Not Found\nPlease Try Again Later")
+                this.props.navigation.goBack();
+            }else if(response.status == 500){
+              alert("A Server Error Has Occurred, Please Try Again Later");
+              this.props.navigation.goBack();
+            }else{
+                throw "Uncought Error Occured";
+            }
       })
       .catch((error) => {
           console.log(error);
       })
-
       }
     }
 
-
-
-
-
-
-
-
-    checkAuthor = async () => {
-      console.log("Author checked")
-
-      const dddd = await this.state.postData.user_id
-
-      console.log(dddd)
-    }
-
-
-
-
+    //Likes an individual post
     likePost = async () => {
-
+      //Gets token, post and user IDs
       const userPostID = await AsyncStorage.getItem('@post_id');
       const userID = await AsyncStorage.getItem('@user_id');
       const value = await AsyncStorage.getItem('@session_token');
-
-      console.log("This is what happens")
-
-
-
+      //Like post server request
       return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID + "/like", {
             method: 'post',
             headers: {
@@ -114,37 +144,42 @@ class UserPost extends Component{
         })
         .then((response) => {
           console.log(response.status)
-          this.props.navigation.goBack()
-            if(response.status === 201){
-                console.log("Yay")
-                return response.json()
-            }else if(response.status === 400){
-                throw 'Failed validation';
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-
+          //Error handling
+          if(response.status == 200){
+  	        alert("Post Liked");
+            this.props.navigation.goBack();
+            return response.json();
+          }else if(response.status == 400){
+            alert("Bad Request\nPlease Try Again")
+          }else if(response.status == 401){
+              alert("Unauthorised\nPlease Try Again Later")
+              this.props.navigation.navigate("Login");
+          }else if(response.status == 403){
+              alert("Forbidden\nPost Already Liked or Post Not Made by Your Friend\n*POTENTIAL KNOWN SERVER ERROR*")
+              this.props.navigation.goBack();
+          }else if(response.status == 404){
+              alert("Post Not Found\nPlease Try Again Later")
+              this.props.navigation.goBack();
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
+            this.props.navigation.goBack();
+          }else{
+              throw "Uncought Error Occured";
+          }
         })
         .catch((error) => {
             console.log(error);
         })
     }
 
-
+    //Unlike an individual post
     unlikePost = async () => {
-      console.log("Post unliked");
-
-
+      //Gets token, post and user IDs
       const userPostID = await AsyncStorage.getItem('@post_id');
       const userID = await AsyncStorage.getItem('@user_id');
       const value = await AsyncStorage.getItem('@session_token');
 
-
-
-
-
+      //Unlike post server request
       return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID + "/like", {
             method: 'delete',
             headers: {
@@ -153,112 +188,45 @@ class UserPost extends Component{
             }
         })
         .then((response) => {
+          //Error handling
           console.log(response.status)
-          this.props.navigation.goBack()
-            if(response.status === 201){
-                console.log("Yay")
-                return response.json()
-            }else if(response.status === 400){
-                throw 'Failed validation';
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-
-
+          if(response.status == 200){
+  	        alert("Like Removed");
+            this.props.navigation.goBack();
+            return response.json();
+          }else if(response.status == 400){
+            alert("Bad Request\nPlease Try Again");
+          }else if(response.status == 401){
+              alert("Unauthorised\nPlease Try Again Later");
+              this.props.navigation.navigate("Login");
+          }else if(response.status == 403){
+            alert("Forbidden\nPost Not Liked or Post Not Made by Your Friend\n*POTENTIAL KNOWN SERVER ERROR*")
+            this.props.navigation.goBack();
+          }else if(response.status == 404){
+              alert("Post Not Found\nPlease Try Again Later");
+              this.props.navigation.goBack();
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
+            this.props.navigation.goBack();
+          }else{
+              throw "Uncought Error Occured";
+          }
         })
         .catch((error) => {
             console.log(error);
         })
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Loads user posts
-    loadPost = async () => {
-
-      
-
-      const userPostID = await AsyncStorage.getItem('@post_id');
-      const userID = await AsyncStorage.getItem('@user_id');
-      const value = await AsyncStorage.getItem('@session_token');
-
-      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + userPostID, {
-            'headers': {
-              'X-Authorization':  value
-            }
-          })
-          .then((response) => {
-
-              if(response.status === 200){
-                  return response.json()
-              }else if(response.status === 401){
-                alert("You need to log in")
-                this.props.navigation.navigate("Login");
-              }else if(response.status === 404){
-                alert("This post no longer exists")
-                this.props.navigation.goBack();
-              }else{
-                  throw 'Something went wrong';
-              }
-          })
-          .then((responseJson) => {
-            console.log(responseJson)
-            this.setState({
-              isLoading: false,
-              postData: responseJson
-            })
-            this.checkAuthor();
-          })
-          .catch((error) => {
-              console.log(error);
-          })
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //Deletes specific post
     deletePost = async () => {
-
-
+      //Loading view
+      this.state.isLoading = true;
+      //Gets token, post and user IDs
       const postID = await AsyncStorage.getItem('@post_id');
       const userID = await AsyncStorage.getItem('@userT_id');
       const value = await AsyncStorage.getItem('@session_token');
-
-      console.log(postID)
-      console.log(userID)
-      console.log(value)
-
-      let string = "http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID;
-
-      return fetch(string, {
+      //Delete post server request
+      return fetch("http://localhost:3333/api/1.0.0/user/" + userID + "/post/" + postID, {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json',
@@ -266,35 +234,42 @@ class UserPost extends Component{
             }
         })
         .then((response) => {
-            console.log(string + " : " + response.status)
+          if(response.status == 200){
+  	         alert("Post Removed")
+             this.props.navigation.goBack();
+             return response.json()
+          }else if(response.status == 400){
+             alert("Bad Request\nPlease Try Again")
+          }else if(response.status == 401){
+              alert("Unauthorised\nPlease Try Again Later")
+              this.props.navigation.navigate("Login");
+          }else if(response.status == 403){
+              alert("Forbidden\nYou Can Only Delete Your Own Posts")
+              this.props.navigation.goBack();
+          }else if(response.status == 404){
+              alert("Post Not Found\nPlease Try Again Later")
+              this.props.navigation.goBack();
+          }else if(response.status == 500){
+            alert("A Server Error Has Occurred, Please Try Again Later");
             this.props.navigation.goBack();
-            alert("Post Removed")
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'Failed validation';
-            }else{
-                throw 'Something went wrong ' + response.status;
-            }
+          }else{
+              throw "Uncought Error Occured";
+          }
         })
         .then((responseJson) => {
-          console.log("Need to go back")
+          //Loading view disabled
+          this.state.isLoading = false;
         })
         .catch((error) => {
             console.log(error);
         })
-
-
-
-
     }
 
-
-
+    //Checks author of post, passes it to state
     checkAuthor = async () => {
-
+      //Gets session ID
       const myID = await AsyncStorage.getItem('@session_id');
-
+      //Compares post ID with session ID, update state accordingly
       if(this.state.postData.author.user_id == myID){
         this.setState({
           myPost: true
@@ -302,55 +277,12 @@ class UserPost extends Component{
       }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //If loading state is true, show loading screen
+    //Changes functionality depending on if user is author of post
     render(){
-
-
-
-
       if(this.state.isLoading){
         return(
-          <View
-            style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          <View style={{flex: 1,flexDirection: 'column',justifyContent: 'center',alignItems: 'center',}}>
             <Text>Loading</Text>
           </View>
         );
@@ -359,13 +291,9 @@ class UserPost extends Component{
           return (
             <ScrollView>
               <View>
-
-
               <Text>
                 {this.state.postData.text}
               </Text>
-
-
               </View>
               <Button title="Like" onPress={() => this.likePost()}/>
               <Button title="Unlike" onPress={() => this.unlikePost()}/>
@@ -377,13 +305,7 @@ class UserPost extends Component{
           return(
             <ScrollView>
               <View>
-
-              <TextInput
-                defaultValue={this.state.postData.text}
-                onChangeText={value => this.setState({updatePostContent: value})}
-              />
-
-
+                <TextInput defaultValue={this.state.postData.text} onChangeText={value => this.setState({updatePostContent: value})}/>
               </View>
               <Button title="Update" onPress={() => this.updatePost()}/>
               <Button title="Delete" onPress={() => this.deletePost()}/>
@@ -394,6 +316,5 @@ class UserPost extends Component{
       }
     }
   }
-
 
 export default UserPost;
