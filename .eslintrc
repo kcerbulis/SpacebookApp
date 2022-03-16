@@ -1,0 +1,15 @@
+{
+    "extends": ["airbnb", "prettier"],
+    "parser": "@babel/eslint-parser",
+    "env": {
+      "node": true,
+      "es6": true,
+      "browser": true
+    },
+    "rules": {
+      "no-console":"off",
+      "ignoreComments": true,
+      "skipBlankLines": true,
+      "ignoreComments": true
+    }
+  }
