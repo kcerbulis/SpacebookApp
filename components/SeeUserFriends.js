@@ -13,6 +13,7 @@ class SeeUserFriends extends Component {
     this.state = {
       isLoading: true,
       friendData: [],
+      hasFriends: false,
     };
   }
 
@@ -63,6 +64,12 @@ class SeeUserFriends extends Component {
             isLoading: false,
             friendData: responseJson,
           });
+          // If friend requests present
+          if (this.state.friendData.length > 0) {
+            this.setState({
+              hasFriends: true,
+            });
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -80,6 +87,15 @@ class SeeUserFriends extends Component {
           >
             <Text>Loading</Text>
           </View>
+        );
+      }if (this.state.hasFriends == false) {
+        return (
+          <ScrollView>
+            <View>
+              <Text>User Has No Friends lol</Text>
+            </View>
+            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
+          </ScrollView>
         );
       }
       return (

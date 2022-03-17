@@ -157,105 +157,115 @@ class Posts extends Component {
 
     // Uploads new post and displays in window
     uploadNewPost = async () => {
-      // Gets user session token
-      const value = await AsyncStorage.getItem('@session_token');
-      // Gets user ID
-      const id = await AsyncStorage.getItem('@session_id');
-      // Request body taken from state
-      const postContentVar = {
-        text: this.state.postContent,
-      };
-      // Upload post server request
-      return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Authorization': value,
-        },
-        body: JSON.stringify(postContentVar),
-      })
-        .then((response) => {
-          console.log(response.status);
-          // Error handling
-          if (response.status == 201) {
-            return response.json();
-          } if (response.status == 400) {
-            alert('Bad Request\nPlease Try Again');
-          } else if (response.status == 401) {
-            alert('Unauthorised\nPlease Try Again Later');
-            this.props.navigation.navigate('Login');
-          } else if (response.status == 403) {
-            alert('Forbidden\nYou Can Only Post on Your and Your Friends Profiles');
-            this.props.navigation.goBack();
-          } else if (response.status == 404) {
-            alert('Profile Not Found\nPlease Try Again Later');
-            this.props.navigation.goBack();
-          } else if (response.status == 500) {
-            alert('A Server Error Has Occurred, Please Try Again Later');
-          } else {
-            throw 'Uncought Error Occured';
-          }
+      if(this.state.postContent == ''){
+        alert("Nothing To Post");
+      }
+      else{
+        // Gets user session token
+        const value = await AsyncStorage.getItem('@session_token');
+        // Gets user ID
+        const id = await AsyncStorage.getItem('@session_id');
+        // Request body taken from state
+        const postContentVar = {
+          text: this.state.postContent,
+        };
+        // Upload post server request
+        return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': value,
+          },
+          body: JSON.stringify(postContentVar),
         })
-        .then((responseJson) => {
-          // Clears new post input window
-          this.state.postContent = '';
-          // Reloads post list
-          this.loadPosts();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((response) => {
+            console.log(response.status);
+            // Error handling
+            if (response.status == 201) {
+              return response.json();
+            } if (response.status == 400) {
+              alert('Bad Request\nPlease Try Again');
+            } else if (response.status == 401) {
+              alert('Unauthorised\nPlease Try Again Later');
+              this.props.navigation.navigate('Login');
+            } else if (response.status == 403) {
+              alert('Forbidden\nYou Can Only Post on Your and Your Friends Profiles');
+              this.props.navigation.goBack();
+            } else if (response.status == 404) {
+              alert('Profile Not Found\nPlease Try Again Later');
+              this.props.navigation.goBack();
+            } else if (response.status == 500) {
+              alert('A Server Error Has Occurred, Please Try Again Later');
+            } else {
+              throw 'Uncought Error Occured';
+            }
+          })
+          .then((responseJson) => {
+            // Clears new post input window
+            this.state.postContent = '';
+            // Reloads post list
+            this.loadPosts();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
     }
 
     // Uploads new post to user and displays in  window
     uploadNewPostUser = async () => {
-      // Gets user session token
-      const value = await AsyncStorage.getItem('@session_token');
-      // Gets user ID
-      const id = await AsyncStorage.getItem('@user_id');
-      // Request body taken from state
-      const postContentVar = {
-        text: this.state.userPostContent,
-      };
-      // Upload user post server request
-      return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Authorization': value,
-        },
-        body: JSON.stringify(postContentVar),
-      })
-        .then((response) => {
-          console.log(response.status);
-          // Error handling
-          if (response.status == 201) {
-            return response.json();
-          } if (response.status == 400) {
-            alert('Bad Request\nPlease Try Again');
-          } else if (response.status == 401) {
-            alert('Unauthorised\nPlease Try Again Later');
-            this.props.navigation.navigate('Login');
-          } else if (response.status == 403) {
-            alert('Forbidden\nYou Can Only Post on Your and Your Friends Profiles');
-            this.props.navigation.goBack();
-          } else if (response.status == 404) {
-            alert('Profile Not Found\nPlease Try Again Later');
-            this.props.navigation.goBack();
-          } else if (response.status == 500) {
-            alert('A Server Error Has Occurred, Please Try Again Later');
-          } else {
-            throw 'Uncought Error Occured';
-          }
+      if(this.state.userPostContent == ''){
+        alert("Nothing To Post");
+      }
+      else{
+        // Gets user session token
+        const value = await AsyncStorage.getItem('@session_token');
+        // Gets user ID
+        const id = await AsyncStorage.getItem('@user_id');
+        // Request body taken from state
+        const postContentVar = {
+          text: this.state.userPostContent,
+        };
+        // Upload user post server request
+        return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': value,
+          },
+          body: JSON.stringify(postContentVar),
         })
-        .then((responseJson) => {
-          // Clears new post input window
-          this.state.userPostContent = '';
-          this.loadPostsUser();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((response) => {
+            console.log(response.status);
+            // Error handling
+            if (response.status == 201) {
+              return response.json();
+            } if (response.status == 400) {
+              alert('Bad Request\nPlease Try Again');
+            } else if (response.status == 401) {
+              alert('Unauthorised\nPlease Try Again Later');
+              this.props.navigation.navigate('Login');
+            } else if (response.status == 403) {
+              alert('Forbidden\nYou Can Only Post on Your and Your Friends Profiles');
+              this.props.navigation.goBack();
+            } else if (response.status == 404) {
+              alert('Profile Not Found\nPlease Try Again Later');
+              this.props.navigation.goBack();
+            } else if (response.status == 500) {
+              alert('A Server Error Has Occurred, Please Try Again Later');
+            } else {
+              throw 'Uncought Error Occured';
+            }
+          })
+          .then((responseJson) => {
+            // Clears new post input window
+            this.state.userPostContent = '';
+            this.loadPostsUser();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
     }
 
     //Saves new draft in async storage
@@ -267,14 +277,17 @@ class Posts extends Component {
       else{
         //Gets old draft number
         let oldDraftCount = await AsyncStorage.getItem('@draftCount');
-        //Increments draft number
-        const newDraftCount = parseInt(oldDraftCount) + 1;
-        //Saves new draft count
-        await AsyncStorage.setItem('@draftCount', newDraftCount);
+        //Updates draft count
+        await AsyncStorage.setItem('@draftCount', parseInt(oldDraftCount) + 1);
         //Gets new draft count
         const currentDraftNumber = await AsyncStorage.getItem('@draftCount');
-        //Dynamically saves draft contetn in async storage
+        //Dynamically saves draft in async storage
         await AsyncStorage.setItem('@draftNr' + currentDraftNumber, this.state.postContent);
+        //Clears text field
+        this.state.postContent = '';
+        alert("Message Saved To Drafts")
+        //Reloads posts
+        this.loadPosts();
       }
     }
 
@@ -347,7 +360,6 @@ class Posts extends Component {
             <View>
               <TextInput placeholder="Type a new post here..." onChangeText={(value) => this.setState({ userPostContent: value })} value={this.state.userPostContent} />
               <Button onPress={() => { this.uploadNewPostUser(); }} title="Add new post" />
-              <Button onPress={() => { this.saveToDrafts(); }} title="Save To Drafts"/>
               <FlatList
                 data={this.state.listDataUser}
                 renderItem={({ item, index }) => (

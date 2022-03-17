@@ -49,14 +49,15 @@ class LoginScreen extends Component {
           // Stores tokens, ID's and view states in AsyncStorage
           await AsyncStorage.setItem('@session_id', responseJson.id);
           await AsyncStorage.setItem('@session_token', responseJson.token);
+          console.log("My id is " + responseJson.id + " My token is " + responseJson.token)
           await AsyncStorage.setItem('@profileState', 'mine');
           await AsyncStorage.setItem('@postsState', 'mine');
-          //Checks if there are drafts present
-          try {
-            const draftCount = await AsyncStorage.getItem('@draftCount');
-          }
-          //If no drafts present, set the count to 0
-          catch{
+
+          //Gets number of drafts
+          const draftCount = await AsyncStorage.getItem('@draftCount');
+
+          //If there is no number, set it to 0
+          if(isNaN(draftCount) || (draftCount == null)){
             await AsyncStorage.setItem('@draftCount', 0);
           }
           // Navigates user to the landing page of the application

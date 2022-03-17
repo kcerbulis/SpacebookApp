@@ -303,11 +303,24 @@ class Profile extends Component {
         <ScrollView>
           <Image source={{ uri: this.state.photo }} style={{ width: 400, height: 400 }} />
           <Text>{this.state.myName}</Text>
-          <Button title="My Post" onPress={() => this.props.navigation.navigate('Posts')} />
-          <Button title="My Drafts" onPress={() => this.props.navigation.navigate('Drafts')} />
+          <Button title="Post" onPress={() => this.props.navigation.navigate('Posts')} />
+          <Button title="Drafts" onPress={() => this.props.navigation.navigate('Drafts')} />
+          <Button title="Friends" onPress={() => this.props.navigation.navigate('SeeFriends')} />
           <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
-          <Button title="Friend List" onPress={() => this.props.navigation.navigate('SeeFriends')} />
           <Button title="My Info" onPress={() => this.props.navigation.navigate('UpdateMyInfo')} />
+        </ScrollView>
+      );
+    }if (this.state.profileState == 'mineSearch') {
+      return (
+        <ScrollView>
+          <Image source={{ uri: this.state.photo }} style={{ width: 400, height: 400 }} />
+          <Text>{this.state.myName}</Text>
+          <Button title="Post" onPress={() => this.props.navigation.navigate('Posts')} />
+          <Button title="Drafts" onPress={() => this.props.navigation.navigate('Drafts')} />
+          <Button title="Friends" onPress={() => this.props.navigation.navigate('SeeFriends')} />
+          <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
+          <Button title="My Info" onPress={() => this.props.navigation.navigate('UpdateMyInfo')}/>
+          <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
         </ScrollView>
       );
     }

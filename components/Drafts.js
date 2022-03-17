@@ -24,6 +24,9 @@ class Drafts extends Component {
   getDraftCount = async () => {
     //Accesses draft count number
     let draftCount = await AsyncStorage.getItem('@draftCount');
+
+    console.log(draftCount)
+
     //For ever entry in drafts
     for (let i = 1; i <= draftCount; i ++){
       //Gets correct draft
@@ -38,11 +41,9 @@ class Drafts extends Component {
   sendDraft = async () =>{
     console.log("Draft Sent")
   }
-
   editDraft = async () =>{
     console.log("Draft Edited")
   }
-
   deleteDraft = async () =>{
     console.log("Draft Deleted")
   }
