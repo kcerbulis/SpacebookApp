@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button} from 'reactstrap';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class LoginScreen extends Component {
 
     // Logs in user with correct credentials
     login = async () =>
+
       // Login POST request to the server
       fetch('http://localhost:3333/api/1.0.0/login', {
         method: 'post',
@@ -67,17 +69,71 @@ class LoginScreen extends Component {
           console.log(error);
         })
 
+    onCheckboxBtnClick = async (selected) => {
+        console.log("THis is pressed")
+      }
+
     render() {
       // Login text fields and buttons
       return (
-        <ScrollView>
-          <TextInput placeholder="Enter your email..." onChangeText={(email) => this.setState({ email })} value={this.state.email} style={{ padding: 5, borderWidth: 1, margin: 5 }} />
-          <TextInput placeholder="Enter your password..." onChangeText={(password) => this.setState({ password })} value={this.state.password} secureTextEntry style={{ padding: 5, borderWidth: 1, margin: 5 }} />
-          <Button title="Login" onPress={() => this.login()} />
-          <Button title="Create an account" color="darkblue" onPress={() => this.props.navigation.navigate('Signup')} />
-        </ScrollView>
+        <View style={styles.container}>
+          <View style={styles.textContainer}>
+            <TextInput style={styles.textInput} placeholder="Enter your email..." onChangeText={(email) => this.setState({ email })} value={this.state.email} />
+            <TextInput style={styles.textInput} placeholder="Enter your password..." onChangeText={(password) => this.setState({ password })} value={this.state.password} secureTextEntry/>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.login()} >Login</Button>
+            <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.props.navigation.navigate('Signup')}>Signup</Button>
+          </View>
+        </View>
       );
     }
 }
+
+// Styling
+const styles = StyleSheet.create({
+
+  container: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  textContainer: {
+    height: "auto",
+    width: "40%",
+    minWidth: 200,
+    marginTop: "1%",
+  },
+
+  textInput: {
+    fontWeight: 500,
+    padding: 13,
+    borderWidth: 1,
+    borderRadius: 40,
+    margin: 8
+  },
+
+  buttonContainer: {
+    height: "auto",
+    width: "20%",
+    justifyContent: 'space-evenly',
+    marginTop: "2%",
+    flexDirection: 'row',
+  },
+
+
+
+
+
+
+
+
+
+
+});
+
 
 export default LoginScreen;

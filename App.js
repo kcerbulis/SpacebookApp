@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -11,6 +12,7 @@ const Stack = createNativeStackNavigator();
 
 class App extends Component {
 
+  //Stack navigator for main components
   render(){
     return(
       <NavigationContainer>

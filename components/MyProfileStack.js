@@ -16,6 +16,7 @@ import SeeFriends from './SeeFriends';
 import UpdateMyInfo from './UpdateMyInfo';
 import TakePhoto from './TakePhoto';
 import Drafts from './Drafts';
+import Accessibility from './Accessibility'
 
 // Allows stack navigation
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ class MyProfileStack extends Component {
         <Stack.Screen name="Posts" component={Posts} options={{ headerShown: false }} />
         <Stack.Screen name="UserPost" component={UserPost} options={{ headerShown: false }} />
         <Stack.Screen name="Drafts" component={Drafts} options={{ headerShown: false }} />
+        <Stack.Screen name="Accessibility" component={Accessibility} options={{ headerShown: false }} />
       </Stack.Navigator>
     );
   }

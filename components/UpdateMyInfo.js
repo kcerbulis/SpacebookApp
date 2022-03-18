@@ -163,6 +163,7 @@ class UpdateMyInfo extends Component {
         </View>
         <Button title="Save Changes" onPress={() => this.updateUserInformation()} />
         <Button title="Change Profile Photo" onPress={() => this.props.navigation.navigate('TakePhoto')} />
+        <Button title="Accessibility" onPress={() => this.props.navigation.navigate('Accessibility')} />
         <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
       </ScrollView>
     );
