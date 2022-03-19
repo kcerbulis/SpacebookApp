@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, TextInput, View, Button, StyleSheet, Alert, ScrollView, FlatList,
+  Text, TextInput, View, StyleSheet, Alert, ScrollView, FlatList,
 } from 'react-native';
+import { Button} from 'reactstrap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SearchUsers extends Component {
@@ -20,13 +21,7 @@ class SearchUsers extends Component {
   }
 
   componentDidMount() {
-    // Updates list everytime focus is changed
-    //this.unsubscribe = this.props.navigation.addListener('focus', () => {
-      // this.setState({
-      //   peopleOffset: 0,
-      // });
-      this.loadUsers();
-    //});
+    this.loadUsers();
   }
 
   // Navigates to appropriate user profile
@@ -43,6 +38,8 @@ class SearchUsers extends Component {
 
     if(userID == me){
         await AsyncStorage.setItem('@profileState', 'mineSearch');
+        await AsyncStorage.setItem('@postsState', 'mine');
+        console.log("This is my profile")
     }
     else{
         await AsyncStorage.setItem('@profileState', 'user');
@@ -215,112 +212,140 @@ class SearchUsers extends Component {
       );
     }if(this.state.searchByName){
       return(
-        <ScrollView>
-          <TextInput placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-          <Button title="Search" onPress={() => this.queryUsers()} />
-          <View>
-            <FlatList
-              initialNumToRender={10}
-              windowSize={10}
-              data={this.state.friendData}
-              renderItem={({ item }) => (
-                <View>
-                  <Text>
-                    {item.user_givenname}
-                    {' '}
-                    {item.user_familyname}
-                  </Text>
-                  <Button onPress={() => this.navigateToProfile(item.user_id)} title="View Profile" />
-                </View>
-              )}
-              keyExtractor={(item, index) => item.user_id.toString()}
-            />
-          </View>
-          <Button title="Reset Search" onPress={() => this.resetSearch()} />
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+            <View style={styles.searchBtn}>
+              <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
+            </View>
+            <View style={styles.allUserAccounts}>
+              <FlatList
+                initialNumToRender={10}
+                windowSize={10}
+                data={this.state.friendData}
+                renderItem={({ item }) => (
+                  <View style={styles.individualUser}>
+                    <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+                      <Text>
+                        {item.user_givenname}
+                        {' '}
+                        {item.user_familyname}
+                      </Text>
+                    </Button>
+                  </View>
+                )}
+                keyExtractor={(item, index) => item.user_id.toString()}
+              />
+            </View>
+            <View style={styles.controllBtn}>
+              <Button size="lg" color="primary" onClick={() => this.resetSearch()}>Reset</Button>
+            </View>
+          </ScrollView>
+        </View>
       )
     }
     if(this.state.peopleOffset == 0){
       return(
-        <ScrollView>
-          <TextInput placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-          <Button title="Search" onPress={() => this.queryUsers()} />
-          <View>
-            <FlatList
-              initialNumToRender={10}
-              windowSize={10}
-              data={this.state.friendData}
-              renderItem={({ item }) => (
-                <View>
-                  <Text>
-                    {item.user_givenname}
-                    {' '}
-                    {item.user_familyname}
-                  </Text>
-                  <Button onPress={() => this.navigateToProfile(item.user_id)} title="View Profile" />
-                </View>
-              )}
-              keyExtractor={(item, index) => item.user_id.toString()}
-            />
-          </View>
-          <Button title="Next" onPress={() => this.nextPage()} />
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+            <View style={styles.searchBtn}>
+              <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
+            </View>
+            <View style={styles.allUserAccounts}>
+              <FlatList
+                initialNumToRender={10}
+                windowSize={10}
+                data={this.state.friendData}
+                renderItem={({ item }) => (
+                  <View style={styles.individualUser}>
+                    <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+                      <Text>
+                        {item.user_givenname}
+                        {' '}
+                        {item.user_familyname}
+                      </Text>
+                    </Button>
+                  </View>
+                )}
+                keyExtractor={(item, index) => item.user_id.toString()}
+              />
+            </View>
+            <View style={styles.controllBtn}>
+              <Button size="lg" color="primary" onClick={() => this.nextPage()}>Next</Button>
+            </View>
+          </ScrollView>
+        </View>
       )
     }
     else{
       if(this.state.noNext){
         return (
-          <ScrollView>
-            <TextInput placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-            <Button title="Search" onPress={() => this.queryUsers()} />
-            <View>
-              <FlatList
-                initialNumToRender={10}
-                windowSize={10}
-                data={this.state.friendData}
-                renderItem={({ item }) => (
-                  <View>
-                    <Text>
-                      {item.user_givenname}
-                      {' '}
-                      {item.user_familyname}
-                    </Text>
-                    <Button onPress={() => this.navigateToProfile(item.user_id)} title="View Profile" />
-                  </View>
-                )}
-                keyExtractor={(item, index) => item.user_id.toString()}
-              />
-            </View>
-            <Button title="Back" onPress={() => this.previousPage()} />
-          </ScrollView>
+          <View style={styles.container}>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+              <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+              <View style={styles.searchBtn}>
+                <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
+              </View>
+              <View style={styles.allUserAccounts}>
+                <FlatList
+                  initialNumToRender={10}
+                  windowSize={10}
+                  data={this.state.friendData}
+                  renderItem={({ item }) => (
+                    <View style={styles.individualUser}>
+                      <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+                        <Text>
+                          {item.user_givenname}
+                          {' '}
+                          {item.user_familyname}
+                        </Text>
+                      </Button>
+                    </View>
+                  )}
+                  keyExtractor={(item, index) => item.user_id.toString()}
+                />
+              </View>
+              <View style={styles.controllBtn}>
+                <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
+              </View>
+            </ScrollView>
+          </View>
         );
       }
       else{
         return (
-          <ScrollView>
-            <TextInput placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-            <Button title="Search" onPress={() => this.queryUsers()} />
-            <View>
-              <FlatList
-                initialNumToRender={10}
-                windowSize={10}
-                data={this.state.friendData}
-                renderItem={({ item }) => (
-                  <View>
-                    <Text>
-                      {item.user_givenname}
-                      {' '}
-                      {item.user_familyname}
-                    </Text>
-                    <Button onPress={() => this.navigateToProfile(item.user_id)} title="View Profile" />
-                  </View>
-                )}
-                keyExtractor={(item, index) => item.user_id.toString()}
-              />
-            </View>
-            <Button title="Back" onPress={() => this.previousPage()} />
-            <Button title="Next" onPress={() => this.nextPage()} />
-          </ScrollView>
+          <View style={styles.container}>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+              <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+              <View style={styles.searchBtn}>
+                <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
+              </View>
+              <View style={styles.allUserAccounts}>
+                <FlatList
+                  initialNumToRender={10}
+                  windowSize={10}
+                  data={this.state.friendData}
+                  renderItem={({ item }) => (
+                    <View style={styles.individualUser}>
+                      <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+                        <Text>
+                          {item.user_givenname}
+                          {' '}
+                          {item.user_familyname}
+                        </Text>
+                      </Button>
+                    </View>
+                  )}
+                  keyExtractor={(item, index) => item.user_id.toString()}
+                />
+              </View>
+              <View style={styles.controllBtn}>
+                <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
+                <Button size="lg" color="primary" onClick={() => this.nextPage()}>Next</Button>
+              </View>
+            </ScrollView>
+          </View>
         );
       }
     }
@@ -328,6 +353,52 @@ class SearchUsers extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  container: {
+    height: "150%",
+    width: "auto",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#d9fbfb",
+  },
+
+  content: {
+    width: "auto",
+    minWidth: 500,
+    marginTop: "1%",
+  },
+
+  textInput: {
+    fontWeight: 500,
+    padding: 13,
+    borderWidth: 1,
+    borderRadius: 40,
+    margin: 8
+  },
+
+  searchBtn: {
+    width: "auto",
+    marginTop: "4%",
+    flexDirection: "row",
+    justifyContent: 'space-evenly',
+  },
+
+  allUserAccounts: {
+    marginTop: "5%",
+    marginBottom: "2%",
+    alignItems: 'center',
+  },
+
+  individualUser: {
+    marginBottom: "5%",
+  },
+
+  controllBtn: {
+    marginTop: "2%",
+    width: "100%",
+    alignItems: 'center',
+  }
+
 });
 
 export default SearchUsers;

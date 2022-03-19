@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Button, Text, Alert, Modal, StyleSheet, Pressable, View,
+  Text, Alert, Modal, StyleSheet, Pressable, View,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button} from 'reactstrap';
 
 class Logout extends Component {
-  // logout popup state
-  state = {
-    modalVisible: false,
-  };
 
-  // Changes popup visibility
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible });
-  }
 
   // Logs user out of session
   logout = async () => {
@@ -55,40 +48,30 @@ class Logout extends Component {
 
   // Modal setup as a popup alternative to confirm logout
   render() {
-    const { modalVisible } = this.state;
     return (
       <View style={styles.container}>
-        <Pressable onPress={() => this.setModalVisible(true)}>
-          <Text>Log Out</Text>
-        </Pressable>
-        <Modal animationType="slide" transparent={false} visible={modalVisible} onRequestClose={() => { this.setModalVisible(!modalVisible); }}>
-          <View style={styles.popUpContainer}>
-            <Text>Are you sure you want to log out?</Text>
-            <Pressable onPress={() => this.logout()}>
-              <Text>Log Out</Text>
-            </Pressable>
-            <Pressable onPress={() => this.setModalVisible(!modalVisible)}>
-              <Text>Stay</Text>
-            </Pressable>
-          </View>
-        </Modal>
+        <View style={styles.logoutBtnContainer}>
+          <Button size="lg" outline color="danger" onClick={() => this.logout()}>Logout</Button>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  popUpContainer: {
-    backgroundColor: 'blue',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   container: {
-    backgroundColor: 'red',
-    display: 'flex',
-    justifyContent: 'center',
+    height: "100%",
+    width: "100%",
+    display: "flex",
     alignItems: 'center',
+    backgroundColor: "#ffd6e8"
   },
+
+  logoutBtnContainer: {
+    marginTop: "10%",
+  }
+
 });
 
 export default Logout;

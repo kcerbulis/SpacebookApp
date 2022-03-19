@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Button, Text, FlatList, View,
+  Text, FlatList, View, StyleSheet,
 } from 'react-native';
+import { Button} from 'reactstrap';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -45,7 +46,7 @@ class Posts extends Component {
       const postsState = await AsyncStorage.getItem('@postsState');
       // Sets state of whos profile looking at
       await this.setState({
-        postsState,
+        postsState: postsState
       });
     }
 
@@ -324,67 +325,147 @@ class Posts extends Component {
         );
       } if (this.state.isLoading == false) {
         if (this.state.postsState == 'mine') {
+
+
           return (
-            <ScrollView>
-              <View>
-                <TextInput placeholder="Type a new post here..." onChangeText={(value) => this.setState({ postContent: value })} value={this.state.postContent} />
-                <Button onPress={() => { this.uploadNewPost(); }} title="Add new post"/>
-                <Button onPress={() => { this.saveToDrafts(); }} title="Save To Drafts" />
-                <FlatList
-                  data={this.state.listData}
-                  renderItem={({ item, index }) => (
-                    <View>
-                      <Text>
-                        {item.author.first_name}
-                        :
-                        {' '}
-                        {item.text}
-                        {' '}
-                        [
-                        {item.numLikes}
-                        {' '}
-                        likes]
-                      </Text>
-                      <Button title="Inspec Post" onPress={() => this.inspecPost(item.post_id, item.author.user_id)} />
+            <View style={styles.container}>
+              <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+                <View style={styles.contentView}>
+                  <TextInput style={styles.textInput} placeholder="Type a new post here..." onChangeText={(value) => this.setState({ postContent: value })} value={this.state.postContent} />
+                  <View style={styles.postBtnContainer}>
+                    <Button size="lg" color="primary" onClick={() => { this.uploadNewPost(); }}>Publish</Button>
+                    <Button size="lg" color="primary" outline onClick={() => { this.saveToDrafts(); }}>Draft</Button>
+                  </View>
+                  <View style={styles.allPostsContainer}>
+                    <FlatList
+                      data={this.state.listData}
+                      renderItem={({ item, index }) => (
+                        <View style={styles.individualPost}>
+                          <Button size="sm" color="primary" outline onClick={() => this.inspecPost(item.post_id, item.author.user_id)}>
+                            <Text>
+                              {item.author.first_name}
+                              :
+                              {' '}
+                              {item.text}
+                              {' '}
+                              [
+                              {item.numLikes}
+                              {' '}
+                              likes]
+                            </Text>
+                          </Button>
+                        </View>
+
+                      )}
+                    />
+                    <View style={styles.backButtonContainer}>
+                      <Button size="lg" color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
                     </View>
-                  )}
-                />
-              </View>
-              <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-            </ScrollView>
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
           );
         }
-
         return (
-          <ScrollView>
-            <View>
-              <TextInput placeholder="Type a new post here..." onChangeText={(value) => this.setState({ userPostContent: value })} value={this.state.userPostContent} />
-              <Button onPress={() => { this.uploadNewPostUser(); }} title="Add new post" />
-              <FlatList
-                data={this.state.listDataUser}
-                renderItem={({ item, index }) => (
-                  <View>
-                    <Text>
-                      {item.author.first_name}
-                      :
-                      {' '}
-                      {item.text}
-                      {' '}
-                      [
-                      {item.numLikes}
-                      {' '}
-                      likes]
-                    </Text>
-                    <Button title="Inspec Post" onPress={() => this.inspecPostUser(item.post_id, item.author.user_id)} />
+
+
+
+          <View style={styles.container}>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+              <View style={styles.contentView}>
+                <TextInput style={styles.textInput} placeholder="Type a new post here..." onChangeText={(value) => this.setState({ userPostContent: value })} value={this.state.userPostContent} />
+                <View style={styles.postBtnContainer}>
+                  <Button size="lg" color="primary" onClick={() => { this.uploadNewPostUser(); }}>Publish</Button>
+                </View>
+                <View style={styles.allPostsContainer}>
+                  <FlatList
+                    data={this.state.listDataUser}
+                    renderItem={({ item, index }) => (
+                      <View style={styles.individualPost}>
+                        <Button size="sm" color="primary" outline onClick={() => this.inspecPostUser(item.post_id, item.author.user_id)}>
+                          <Text>
+                            {item.author.first_name}
+                            :
+                            {' '}
+                            {item.text}
+                            {' '}
+                            [
+                            {item.numLikes}
+                            {' '}
+                            likes]
+                          </Text>
+                        </Button>
+                      </View>
+
+                    )}
+                  />
+                  <View style={styles.backButtonContainer}>
+                    <Button size="lg" color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
                   </View>
-                )}
-              />
-            </View>
-            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-          </ScrollView>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+
+
+
+
+
+
+
         );
       }
     }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    width: "auto",
+    minWidth: "500px",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  content: {
+    width: "auto",
+    minWidth: 500,
+    marginTop: "1%",
+  },
+
+  textInput: {
+    fontWeight: 500,
+    padding: 13,
+    borderWidth: 1,
+    borderRadius: 40,
+    margin: 8
+  },
+
+  postBtnContainer: {
+    width: "auto",
+    marginTop: "4%",
+    flexDirection: "row",
+    justifyContent: 'space-evenly',
+  },
+
+  allPostsContainer: {
+    marginTop: "5%",
+    marginBottom: "2%",
+    alignItems: 'center',
+  },
+
+  individualPost: {
+    flexDirection: "row",
+    marginLeft: "20px",
+    marginBottom: "10px",
+  },
+
+  backButtonContainer: {
+    marginTop: "2%",
+    width: "57%",
+  }
+});
 
 export default Posts;

@@ -94,6 +94,7 @@ class SeeFriends extends Component {
             <View>
               <Text>You Have No Friends lol</Text>
             </View>
+            <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
             <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
           </ScrollView>
         );
@@ -115,6 +116,7 @@ class SeeFriends extends Component {
               keyExtractor={(item, index) => item.user_id.toString()}
             />
           </View>
+          <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
           <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
         </ScrollView>
       );

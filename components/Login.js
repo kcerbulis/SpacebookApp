@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button} from 'reactstrap';
@@ -122,17 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     marginTop: "2%",
     flexDirection: 'row',
-  },
-
-
-
-
-
-
-
-
-
-
+  }
 });
 
 

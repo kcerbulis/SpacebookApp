@@ -152,7 +152,7 @@ class UserPost extends Component {
             this.props.navigation.goBack();
             return response.json();
           } if (response.status == 400) {
-            alert('Bad Request\nPlease Try Again');
+            alert('Bad Request\nPost Already Liked');
           } else if (response.status == 401) {
             alert('Unauthorised\nPlease Try Again Later');
             this.props.navigation.navigate('Login');
@@ -225,7 +225,7 @@ class UserPost extends Component {
       this.state.isLoading = true;
       // Gets token, post and user IDs
       const postID = await AsyncStorage.getItem('@post_id');
-      const userID = await AsyncStorage.getItem('@userT_id');
+      const userID = await AsyncStorage.getItem('@user_id');
       const value = await AsyncStorage.getItem('@session_token');
       // Delete post server request
       return fetch(`http://localhost:3333/api/1.0.0/user/${userID}/post/${postID}`, {

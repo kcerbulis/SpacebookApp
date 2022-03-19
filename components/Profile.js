@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, TextInput, View, ScrollView, Button, StyleSheet, Alert, FlatList, Image,
+  Text, TextInput, View, ScrollView, StyleSheet, Alert, FlatList, Image,
 } from 'react-native';
+import { Button} from 'reactstrap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -300,50 +301,64 @@ class Profile extends Component {
       );
     } if (this.state.profileState == 'mine') {
       return (
-        <ScrollView>
-          <Image source={{ uri: this.state.photo }} style={{ width: 400, height: 400 }} />
-          <Text>{this.state.myName}</Text>
-          <Button title="Post" onPress={() => this.props.navigation.navigate('Posts')} />
-          <Button title="Drafts" onPress={() => this.props.navigation.navigate('Drafts')} />
-          <Button title="Friends" onPress={() => this.props.navigation.navigate('SeeFriends')} />
-          <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
-          <Button title="My Info" onPress={() => this.props.navigation.navigate('UpdateMyInfo')} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <Image style={styles.profilePhoto} accessibilityLabel="Your Profile Image" resizeMode="center" source={{ uri: this.state.photo }}/>
+            <Text style={styles.userName}>{this.state.myName}</Text>
+            <View style={styles.buttonContainer}>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('Posts')}>Posts</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('Drafts')}>Drafts</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('SeeFriends')}>Friends</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('UpdateMyInfo')}>Info</Button>
+            </View>
+          </View>
         </ScrollView>
       );
     }if (this.state.profileState == 'mineSearch') {
       return (
-        <ScrollView>
-          <Image source={{ uri: this.state.photo }} style={{ width: 400, height: 400 }} />
-          <Text>{this.state.myName}</Text>
-          <Button title="Post" onPress={() => this.props.navigation.navigate('Posts')} />
-          <Button title="Drafts" onPress={() => this.props.navigation.navigate('Drafts')} />
-          <Button title="Friends" onPress={() => this.props.navigation.navigate('SeeFriends')} />
-          <Button title="Friend Request" onPress={() => this.props.navigation.navigate('FriendRequests')} />
-          <Button title="My Info" onPress={() => this.props.navigation.navigate('UpdateMyInfo')}/>
-          <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <Image style={styles.profilePhoto} resizeMode="center" accessibilityLabel="Your Profile Image" source={{ uri: this.state.photo }}/>
+            <Text style={styles.userName}>{this.state.myName}</Text>
+            <View style={styles.buttonContainerLarge}>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('Posts')}>Posts</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('Drafts')}>Drafts</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('SeeFriends')}>Friends</Button>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('UpdateMyInfo')}>Info</Button>
+              <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+            </View>
+          </View>
         </ScrollView>
       );
     }
     if (this.state.profileState == 'user') {
       if (this.state.isFriend) {
         return (
-          <ScrollView>
-            <Image source={{ uri: this.state.photoUser }} style={{ width: 400, height: 400 }} />
-            <Text>{this.state.userName}</Text>
-            <Button title="Post" onPress={() => this.goToUserPosts()} />
-            <Button title="View Friends" onPress={() => this.props.navigation.navigate('SeeUserFriends')} />
-            <Button title="User Info" onPress={() => this.props.navigation.navigate('UserInfo')} />
-            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.container}>
+              <Image style={styles.profilePhotoUser} resizeMode="center" accessibilityLabel="Friends Profile Image" source={{ uri: this.state.photoUser }}/>
+              <Text style={styles.userName}>{this.state.userName}</Text>
+              <View style={styles.buttonContainer}>
+                <Button size="lg" color="primary" onClick={() => this.goToUserPosts()}>Posts</Button>
+                <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('SeeUserFriends')}>Friends</Button>
+                <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('UserInfo')}>Info</Button>
+                <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+              </View>
+            </View>
           </ScrollView>
         );
       }
       return (
-        <ScrollView>
-          <Image source={{ uri: this.state.photoUser }} style={{ width: 400, height: 400 }} />
-          <Text>{this.state.userName}</Text>
-          <Button title="User Info" onPress={() => this.props.navigation.navigate('UserInfo')} />
-          <Button title="Send Friend Request" onPress={() => this.sendFriendRequest()} />
-          <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <Image style={styles.profilePhotoUser} resizeMode="center" accessibilityLabel="Another Users Profile Image" source={{ uri: this.state.photoUser }}/>
+            <Text style={styles.userName}>{this.state.userName}</Text>
+            <View style={styles.buttonContainer}>
+              <Button size="lg" color="primary" onClick={() => this.props.navigation.navigate('UserInfo')}>Info</Button>
+              <Button size="lg" color="primary" onClick={() => this.sendFriendRequest()}>Add Friends</Button>
+              <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+            </View>
+          </View>
         </ScrollView>
       );
     }
@@ -351,6 +366,45 @@ class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  container: {
+    height: "150%",
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  profilePhoto: {
+    minHeight: "335px",
+    minWidth: "400px",
+    margin: "2px",
+  },
+
+  profilePhotoUser: {
+    minHeight: "380px",
+    minWidth: "400px",
+    margin: "2px",
+  },
+
+  userName: {
+    fontSize: "230%",
+    minWidth: 200,
+    marginBottom: "20px"
+  },
+
+  buttonContainer: {
+    height: "24%",
+    width: "26%",
+    justifyContent: 'space-between',
+  },
+
+  buttonContainerLarge: {
+    height: "34%",
+    width: "24%",
+    justifyContent: 'space-between',
+  }
+
 });
 
 export default Profile;

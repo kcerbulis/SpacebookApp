@@ -34,6 +34,7 @@ This significantly increases the application usability.
 
 To assist people with attention deficit, dyslexia, blindness or any condition that reduces visibility, you are encouraged to use [Windows](https://support.microsoft.com/en-us/windows/complete-guide-to-narrator-e4397a0d-ef4f-b386-d8ae-c172f109bdb1),
 [Mac](https://www.disability.illinois.edu/academic-support/assistive-technology/mac-os-x-voiceover#:~:text=Mac%20OS%20X%20Snow%20Leopard,new%20web%20page%20support%20options.), [Android](https://support.google.com/accessibility/android/answer/6283677?hl=en-GB), or [iOS](https://support.apple.com/en-gb/guide/iphone/iph3e2e415f/ios) screen reader.
+All images used have an ALT tag that allows the screen reader to read it to the user.
 These are designed to assist any specially abled users.
 
 In cases where users have outdated technology, broken/cracked screen or visual issues that reduce reading visibility, all visible components are made
