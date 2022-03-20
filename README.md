@@ -14,6 +14,7 @@ UI library was user for consistent styling, combined with [IBM](https://www.ibm.
 
 This project was developed with high user accessibility in mind. Living with a cognitive learning disorder has allowed me to be an effective use case during the design of the application and ensures that a sufficient level of accessibility is present.
 The application is designed to assist users with:
+
 1.Cognitive Learning Disabilities (autism, attention deficit, dyslexia, dyscalculia, intellectual and memory loss)
 
 2.Visual Disabilities (Colour Blindness, Restless Eye Syndrome, Partial or Full Blindness)
