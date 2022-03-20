@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Button, Text, View, FlatList,
+  Text, View, FlatList, StyleSheet
 } from 'react-native';
+import { Button } from 'reactstrap';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -90,35 +91,59 @@ class SeeUserFriends extends Component {
         );
       } if (this.state.hasFriends == false) {
         return (
-          <ScrollView>
-            <View>
-              <Text>User Has No Friends lol</Text>
-            </View>
-            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-          </ScrollView>
+          <View style={styles.container}>
+            <ScrollView style={styles.conent}>
+              <View>
+                <Text>User Has No Friends lol</Text>
+              </View>
+              <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+            </ScrollView>
+          </View>
         );
       }
       return (
-        <ScrollView>
-          <View>
-            <FlatList
-              data={this.state.friendData}
-              renderItem={({ item }) => (
-                <View>
-                  <Text>
-                    {item.user_givenname}
-                    {' '}
-                    {item.user_familyname}
-                  </Text>
-                </View>
-              )}
-              keyExtractor={(item, index) => item.user_id.toString()}
-            />
-          </View>
-          <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView style={styles.conent}>
+            <View>
+              <FlatList
+                data={this.state.friendData}
+                renderItem={({ item }) => (
+                  <View>
+                    <Text  style={styles.text}>
+                      {item.user_givenname}
+                      {' '}
+                      {item.user_familyname}
+                    </Text>
+                  </View>
+                )}
+                keyExtractor={(item, index) => item.user_id.toString()}
+              />
+            </View>
+            <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+          </ScrollView>
+        </View>
       );
     }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: 'auto',
+    minWidth: '500px',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#e5f6ff',
+  },
+
+  conent: {
+    marginTop: '1%',
+  },
+
+  text: {
+    fontWeight: 500,
+  },
+
+});
 
 export default SeeUserFriends;

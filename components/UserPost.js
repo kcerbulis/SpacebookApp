@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Button, Text, FlatList, View,
+  Text, FlatList, View, StyleSheet
 } from 'react-native';
+import { Button } from 'reactstrap';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -294,31 +295,72 @@ class UserPost extends Component {
       }
       if (this.state.myPost == false) {
         return (
-          <ScrollView>
-            <View>
-              <Text>
-                {this.state.postData.text}
-              </Text>
-            </View>
-            <Button title="Like" onPress={() => this.likePost()} />
-            <Button title="Unlike" onPress={() => this.unlikePost()} />
-            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-          </ScrollView>
+          <View style={styles.container}>
+            <ScrollView>
+              <View>
+                <Text style={styles.text}>
+                  {this.state.postData.text}
+                </Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button size="lg" outline color="primary" onClick={() => this.likePost()}>Like</Button>
+                <Button size="lg" outline color="danger" onClick={() => this.unlikePost()}>Unlike</Button>
+                <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
+              </View>
+            </ScrollView>
+          </View>
         );
       }
       if (this.state.myPost == true) {
         return (
-          <ScrollView>
-            <View>
-              <TextInput defaultValue={this.state.postData.text} onChangeText={(value) => this.setState({ updatePostContent: value })} />
-            </View>
-            <Button title="Update" onPress={() => this.updatePost()} />
-            <Button title="Delete" onPress={() => this.deletePost()} />
-            <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-          </ScrollView>
+          <View style={styles.container}>
+            <ScrollView>
+              <View>
+                <TextInput style={styles.textInput} defaultValue={this.state.postData.text} onChangeText={(value) => this.setState({ updatePostContent: value })} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button size="lg" outline color="primary" onClick={() => this.updatePost()}>Update</Button>
+                <Button size="lg" outline color="danger" onClick={() => this.deletePost()}>Delete</Button>
+                <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
+              </View>
+            </ScrollView>
+          </View>
         );
       }
     }
 }
+
+// Styling
+const styles = StyleSheet.create({
+
+  container: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#e5f6ff',
+  },
+
+  textInput: {
+    fontWeight: 500,
+    padding: 13,
+    borderWidth: 1,
+    borderRadius: 40,
+    margin: 8,
+  },
+
+  buttonContainer: {
+    height: 'auto',
+    width: '20%',
+    marginTop: '5%',
+    flexDirection: 'row',
+  },
+
+  text: {
+    marginTop: "1%",
+    fontWeight: 500,
+  }
+
+});
 
 export default UserPost;
