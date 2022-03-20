@@ -16,15 +16,10 @@ This project was developed with high user accessibility in mind. Living with a c
 The application is designed to assist users with:
 
 1.Cognitive Learning Disabilities (autism, attention deficit, dyslexia, dyscalculia, intellectual and memory loss)
-
 2.Visual Disabilities (Colour Blindness, Restless Eye Syndrome, Partial or Full Blindness)
-
 3.Auditory Processing Disorder
-
 4.Elderly Age
-
 5.Irregular Internet Connection
-
 6.Deprecated Technologies
 
 Application layout is made simple and straightforward. To reduce complexity of use, not too much information is displayed in any given view. However, most section of the application are accessible by no more than 2 click (after login, if credentials allow). This prevents users with cognitive and visual disabilities from becoming overwhelmed by their screen contents while still maintaining high functionality and ease of use.
