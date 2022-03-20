@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class UserInfo extends Component {
@@ -84,15 +84,15 @@ class UserInfo extends Component {
     }
     return (
       <View style={styles.container}>
-        <ScrollView  style={styles.conent} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.conent} showsVerticalScrollIndicator={false}>
           <View style={styles.userInfo}>
-            <Text  style={styles.text}>
+            <Text style={styles.text}>
               {this.state.userInfo.first_name}
             </Text>
-            <Text  style={styles.text}>
+            <Text style={styles.text}>
               {this.state.userInfo.last_name}
             </Text>
-            <Text  style={styles.text}>
+            <Text style={styles.text}>
               {this.state.userInfo.email}
             </Text>
           </View>
@@ -106,19 +106,19 @@ class UserInfo extends Component {
 // Styling
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+    height: '100%',
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   conent: {
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   userInfo: {
-    marginBottom: "7%",
+    marginBottom: '7%',
   },
 
   text: {

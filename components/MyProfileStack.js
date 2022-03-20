@@ -16,7 +16,7 @@ import SeeFriends from './SeeFriends';
 import UpdateMyInfo from './UpdateMyInfo';
 import TakePhoto from './TakePhoto';
 import Drafts from './Drafts';
-import Accessibility from './Accessibility'
+import Accessibility from './Accessibility';
 
 // Allows stack navigation
 const Stack = createNativeStackNavigator();

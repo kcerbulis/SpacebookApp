@@ -4,11 +4,9 @@ import {
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 
 class Logout extends Component {
-
-
   // Logs user out of session
   logout = async () => {
     // Gets session token
@@ -61,16 +59,16 @@ class Logout extends Component {
 const styles = StyleSheet.create({
 
   container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+    height: '100%',
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#ffd6e8"
+    backgroundColor: '#ffd6e8',
   },
 
   logoutBtnContainer: {
-    marginTop: "10%",
-  }
+    marginTop: '10%',
+  },
 
 });
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, TextInput, View, StyleSheet, FlatList, Alert
+  Text, TextInput, View, StyleSheet, FlatList, Alert,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -215,26 +215,25 @@ class FriendRequests extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "auto",
-    minWidth: "500px",
-    display: "flex",
+    height: '100%',
+    width: 'auto',
+    minWidth: '500px',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   conent: {
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   singleRequest: {
-    marginBottom: "10%",
+    marginBottom: '10%',
   },
 
   text: {
     fontWeight: 500,
-  }
-
+  },
 
 });
 

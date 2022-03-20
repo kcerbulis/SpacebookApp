@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Text, FlatList, View, StyleSheet,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,8 +21,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-
-    console.log("Looking at draftable posts")
+    console.log('Looking at draftable posts');
 
     // Gets string of 'mine' or 'user'
     const postsState = await AsyncStorage.getItem('@postsState');
@@ -46,7 +45,7 @@ class Posts extends Component {
       const postsState = await AsyncStorage.getItem('@postsState');
       // Sets state of whos profile looking at
       await this.setState({
-        postsState: postsState
+        postsState,
       });
     }
 
@@ -158,10 +157,9 @@ class Posts extends Component {
 
     // Uploads new post and displays in window
     uploadNewPost = async () => {
-      if(this.state.postContent == ''){
-        alert("Nothing To Post");
-      }
-      else{
+      if (this.state.postContent == '') {
+        alert('Nothing To Post');
+      } else {
         // Gets user session token
         const value = await AsyncStorage.getItem('@session_token');
         // Gets user ID
@@ -210,15 +208,14 @@ class Posts extends Component {
           .catch((error) => {
             console.log(error);
           });
-        }
+      }
     }
 
     // Uploads new post to user and displays in  window
     uploadNewPostUser = async () => {
-      if(this.state.userPostContent == ''){
-        alert("Nothing To Post");
-      }
-      else{
+      if (this.state.userPostContent == '') {
+        alert('Nothing To Post');
+      } else {
         // Gets user session token
         const value = await AsyncStorage.getItem('@session_token');
         // Gets user ID
@@ -266,28 +263,27 @@ class Posts extends Component {
           .catch((error) => {
             console.log(error);
           });
-        }
+      }
     }
 
-    //Saves new draft in async storage
+    // Saves new draft in async storage
     saveToDrafts = async () => {
       // If no info to update, don't update
       if (Object.keys(this.state.postContent).length == 0) {
         alert('Nothing To Save');
-      }
-      else{
-        //Gets old draft number
-        let oldDraftCount = await AsyncStorage.getItem('@draftCount');
-        //Updates draft count
+      } else {
+        // Gets old draft number
+        const oldDraftCount = await AsyncStorage.getItem('@draftCount');
+        // Updates draft count
         await AsyncStorage.setItem('@draftCount', parseInt(oldDraftCount) + 1);
-        //Gets new draft count
+        // Gets new draft count
         const currentDraftNumber = await AsyncStorage.getItem('@draftCount');
-        //Dynamically saves draft in async storage
-        await AsyncStorage.setItem('@draftNr' + currentDraftNumber, this.state.postContent);
-        //Clears text field
+        // Dynamically saves draft in async storage
+        await AsyncStorage.setItem(`@draftNr${currentDraftNumber}`, this.state.postContent);
+        // Clears text field
         this.state.postContent = '';
-        alert("Message Saved To Drafts")
-        //Reloads posts
+        alert('Message Saved To Drafts');
+        // Reloads posts
         this.loadPosts();
       }
     }
@@ -325,8 +321,6 @@ class Posts extends Component {
         );
       } if (this.state.isLoading == false) {
         if (this.state.postsState == 'mine') {
-
-
           return (
             <View style={styles.container}>
               <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -369,8 +363,6 @@ class Posts extends Component {
         }
         return (
 
-
-
           <View style={styles.container}>
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
               <View style={styles.contentView}>
@@ -408,12 +400,6 @@ class Posts extends Component {
             </ScrollView>
           </View>
 
-
-
-
-
-
-
         );
       }
     }
@@ -421,18 +407,18 @@ class Posts extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "auto",
-    minWidth: "500px",
-    display: "flex",
+    height: '100%',
+    width: 'auto',
+    minWidth: '500px',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   content: {
-    width: "auto",
+    width: 'auto',
     minWidth: 500,
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   textInput: {
@@ -440,32 +426,32 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderRadius: 40,
-    margin: 8
+    margin: 8,
   },
 
   postBtnContainer: {
-    width: "auto",
-    marginTop: "4%",
-    flexDirection: "row",
+    width: 'auto',
+    marginTop: '4%',
+    flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
 
   allPostsContainer: {
-    marginTop: "5%",
-    marginBottom: "2%",
+    marginTop: '5%',
+    marginBottom: '2%',
     alignItems: 'center',
   },
 
   individualPost: {
-    flexDirection: "row",
-    marginLeft: "20px",
-    marginBottom: "10px",
+    flexDirection: 'row',
+    marginLeft: '20px',
+    marginBottom: '10px',
   },
 
   backButtonContainer: {
-    marginTop: "2%",
-    width: "57%",
-  }
+    marginTop: '2%',
+    width: '57%',
+  },
 });
 
 export default Posts;

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput
+  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -178,18 +178,18 @@ class UpdateMyInfo extends Component {
 // Styling
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+    height: '100%',
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   textContainer: {
-    height: "auto",
-    width: "40%",
+    height: 'auto',
+    width: '40%',
     minWidth: 200,
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   textInput: {
@@ -197,14 +197,14 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderRadius: 40,
-    margin: 8
+    margin: 8,
   },
 
   buttonContainer: {
-    height: "55%",
-    width: "90%",
+    height: '55%',
+    width: '90%',
     justifyContent: 'space-evenly',
-    marginTop: "2%",
+    marginTop: '2%',
   },
 });
 

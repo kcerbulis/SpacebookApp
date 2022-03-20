@@ -1,10 +1,10 @@
 import {
-  Text, FlatList, View, StyleSheet
+  Text, FlatList, View, StyleSheet,
 } from 'react-native';
 import React, { Component } from 'react';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 
 class MyPost extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class MyPost extends Component {
 
   // Loads post when page laods
   componentDidMount() {
-    console.log("This is my post")
+    console.log('This is my post');
     this.loadPost();
   }
 
@@ -305,9 +305,9 @@ class MyPost extends Component {
                <TextInput style={styles.textInput} defaultValue={this.state.postData.text} onChangeText={(value) => this.setState({ updatePostContent: value })} />
              </View>
              <View style={styles.buttonContainer}>
-               <Button size="lg" outline color="primary" onClick={() => this.updatePost()} >Update</Button>
-               <Button size="lg" outline color="danger" onClick={() => this.deletePost()} >Delete</Button>
-               <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()} >Back</Button>
+               <Button size="lg" outline color="primary" onClick={() => this.updatePost()}>Update</Button>
+               <Button size="lg" outline color="danger" onClick={() => this.deletePost()}>Delete</Button>
+               <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
              </View>
            </ScrollView>
          </View>
@@ -320,9 +320,9 @@ class MyPost extends Component {
              <TextInput style={styles.textInput} defaultValue={this.state.postData.text} onChangeText={(value) => this.setState({ updatePostContent: value })} />
            </View>
            <View style={styles.buttonContainer}>
-             <Button size="lg" outline color="primary" onClick={() => this.likePost()} >Like</Button>
-             <Button size="lg" outline color="danger" onClick={() => this.unlikePost()} >Unlike</Button>
-             <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()} >Back</Button>
+             <Button size="lg" outline color="primary" onClick={() => this.likePost()}>Like</Button>
+             <Button size="lg" outline color="danger" onClick={() => this.unlikePost()}>Unlike</Button>
+             <Button size="lg" outline color="primary" onClick={() => this.props.navigation.goBack()}>Back</Button>
            </View>
          </ScrollView>
        </View>
@@ -334,11 +334,11 @@ class MyPost extends Component {
 const styles = StyleSheet.create({
 
   container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+    height: '100%',
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   textInput: {
@@ -346,15 +346,15 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderRadius: 40,
-    margin: 8
+    margin: 8,
   },
 
   buttonContainer: {
-    height: "auto",
-    width: "20%",
-    marginTop: "2%",
+    height: 'auto',
+    width: '20%',
+    marginTop: '2%',
     flexDirection: 'row',
-  }
+  },
 
 });
 

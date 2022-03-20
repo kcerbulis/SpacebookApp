@@ -88,7 +88,7 @@ class SeeUserFriends extends Component {
             <Text>Loading</Text>
           </View>
         );
-      }if (this.state.hasFriends == false) {
+      } if (this.state.hasFriends == false) {
         return (
           <ScrollView>
             <View>

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, View, FlatList, StyleSheet
+  Text, View, FlatList, StyleSheet,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -89,7 +89,7 @@ class SeeFriends extends Component {
             <Text style={styles.text}>Loading</Text>
           </View>
         );
-      }if (this.state.hasFriends == false) {
+      } if (this.state.hasFriends == false) {
         return (
           <View style={styles.container}>
             <ScrollView style={styles.conent}>
@@ -130,21 +130,21 @@ class SeeFriends extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "auto",
-    minWidth: "500px",
-    display: "flex",
+    height: '100%',
+    width: 'auto',
+    minWidth: '500px',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   conent: {
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   text: {
     fontWeight: 500,
-  }
+  },
 
 });
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Text, TextInput, View, StyleSheet, Alert, ScrollView, FlatList,
 } from 'react-native';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SearchUsers extends Component {
@@ -16,7 +16,7 @@ class SearchUsers extends Component {
       userData: [],
       peopleOffset: 0,
       noNext: false,
-      searchByName: false
+      searchByName: false,
     };
   }
 
@@ -26,25 +26,21 @@ class SearchUsers extends Component {
 
   // Navigates to appropriate user profile
   navigateToProfile = async (userID) => {
-    //Saves user_id to state
+    // Saves user_id to state
     await AsyncStorage.setItem('@user_id', userID);
 
     const me = await AsyncStorage.getItem('@session_id');
 
-    console.log("User id is " + userID)
-    console.log("My id is " + me)
+    console.log(`User id is ${userID}`);
+    console.log(`My id is ${me}`);
 
-
-
-    if(userID == me){
-        await AsyncStorage.setItem('@profileState', 'mineSearch');
-        await AsyncStorage.setItem('@postsState', 'mine');
-        console.log("This is my profile")
+    if (userID == me) {
+      await AsyncStorage.setItem('@profileState', 'mineSearch');
+      await AsyncStorage.setItem('@postsState', 'mine');
+      console.log('This is my profile');
+    } else {
+      await AsyncStorage.setItem('@profileState', 'user');
     }
-    else{
-        await AsyncStorage.setItem('@profileState', 'user');
-    }
-
 
     // Navigates to profile
     this.props.navigation.navigate('Profile');
@@ -54,15 +50,13 @@ class SearchUsers extends Component {
   loadUsers = async () => {
     // Gets user session token
     const value = await AsyncStorage.getItem('@session_token');
-    //Amount of people visible per page
+    // Amount of people visible per page
     const userPerPageLimit = 6;
-    //Amount of people already seen
-    let peopleOffset = this.state.peopleOffset;
-
-
+    // Amount of people already seen
+    const { peopleOffset } = this.state;
 
     // User list server request
-    return fetch('http://localhost:3333/api/1.0.0/search?limit=' + userPerPageLimit + "&offset=" + peopleOffset, {
+    return fetch(`http://localhost:3333/api/1.0.0/search?limit=${userPerPageLimit}&offset=${peopleOffset}`, {
       headers: {
         'X-Authorization': value,
       },
@@ -92,7 +86,7 @@ class SearchUsers extends Component {
         }
       })
       .then((responseJson) => {
-        if(responseJson.length < 6){
+        if (responseJson.length < 6) {
           this.state.noNext = true;
         }
         // Passes response to state, stops loading view
@@ -108,11 +102,10 @@ class SearchUsers extends Component {
 
   // Searches list of all users, passes results to state
   queryUsers = async () => {
-    //Checks if search field is empty
-    if(this.state.searchText == ''){
-      alert("Nothing In Search")
-    }
-    else{
+    // Checks if search field is empty
+    if (this.state.searchText == '') {
+      alert('Nothing In Search');
+    } else {
       this.setState({
         searchByName: true,
       });
@@ -162,24 +155,24 @@ class SearchUsers extends Component {
   }
 
   nextPage = async () => {
-    //Increments people offset
-    let newPeopleOffset = this.state.peopleOffset + 6;
-    //Sets new state
+    // Increments people offset
+    const newPeopleOffset = this.state.peopleOffset + 6;
+    // Sets new state
     await this.setState({
       peopleOffset: newPeopleOffset,
     });
-    //Reloads list with new offset
+    // Reloads list with new offset
     this.loadUsers();
   }
 
   previousPage = async () => {
-    //Reduces people offset
-    let newPeopleOffset = this.state.peopleOffset - 6;
-    //Sets new state
+    // Reduces people offset
+    const newPeopleOffset = this.state.peopleOffset - 6;
+    // Sets new state
     await this.setState({
       peopleOffset: newPeopleOffset,
     });
-    //Reloads list with new offset
+    // Reloads list with new offset
     this.loadUsers();
   }
 
@@ -187,12 +180,10 @@ class SearchUsers extends Component {
     this.setState({
       searchText: '',
       peopleOffset: 0,
-      searchByName: false
+      searchByName: false,
     });
     this.loadUsers();
   }
-
-
 
   // If loading state is true, show loading screen
   // Allows to veiw, search and inspect all other users profiles
@@ -210,8 +201,8 @@ class SearchUsers extends Component {
           <Text>Loading</Text>
         </View>
       );
-    }if(this.state.searchByName){
-      return(
+    } if (this.state.searchByName) {
+      return (
         <View style={styles.container}>
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
@@ -242,10 +233,10 @@ class SearchUsers extends Component {
             </View>
           </ScrollView>
         </View>
-      )
+      );
     }
-    if(this.state.peopleOffset == 0){
-      return(
+    if (this.state.peopleOffset == 0) {
+      return (
         <View style={styles.container}>
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
@@ -276,96 +267,94 @@ class SearchUsers extends Component {
             </View>
           </ScrollView>
         </View>
-      )
+      );
     }
-    else{
-      if(this.state.noNext){
-        return (
-          <View style={styles.container}>
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-              <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-              <View style={styles.searchBtn}>
-                <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
-              </View>
-              <View style={styles.allUserAccounts}>
-                <FlatList
-                  initialNumToRender={10}
-                  windowSize={10}
-                  data={this.state.friendData}
-                  renderItem={({ item }) => (
-                    <View style={styles.individualUser}>
-                      <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+
+    if (this.state.noNext) {
+      return (
+        <View style={styles.container}>
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+            <View style={styles.searchBtn}>
+              <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
+            </View>
+            <View style={styles.allUserAccounts}>
+              <FlatList
+                initialNumToRender={10}
+                windowSize={10}
+                data={this.state.friendData}
+                renderItem={({ item }) => (
+                  <View style={styles.individualUser}>
+                    <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
                         <Text>
                           {item.user_givenname}
                           {' '}
                           {item.user_familyname}
                         </Text>
                       </Button>
-                    </View>
-                  )}
-                  keyExtractor={(item, index) => item.user_id.toString()}
-                />
-              </View>
-              <View style={styles.controllBtn}>
-                <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
-              </View>
-            </ScrollView>
+                  </View>
+                )}
+                keyExtractor={(item, index) => item.user_id.toString()}
+              />
+            </View>
+            <View style={styles.controllBtn}>
+              <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
+          <View style={styles.searchBtn}>
+            <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
           </View>
-        );
-      }
-      else{
-        return (
-          <View style={styles.container}>
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-              <TextInput style={styles.textInput} placeholder="Search user by name..." onChangeText={(value) => this.setState({ searchText: value })} value={this.state.searchText} />
-              <View style={styles.searchBtn}>
-                <Button size="lg" color="primary" onClick={() => this.queryUsers()}>Search User</Button>
-              </View>
-              <View style={styles.allUserAccounts}>
-                <FlatList
-                  initialNumToRender={10}
-                  windowSize={10}
-                  data={this.state.friendData}
-                  renderItem={({ item }) => (
-                    <View style={styles.individualUser}>
-                      <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
+          <View style={styles.allUserAccounts}>
+            <FlatList
+              initialNumToRender={10}
+              windowSize={10}
+              data={this.state.friendData}
+              renderItem={({ item }) => (
+                <View style={styles.individualUser}>
+                  <Button size="lg" color="primary" outline onClick={() => this.navigateToProfile(item.user_id)}>
                         <Text>
                           {item.user_givenname}
                           {' '}
                           {item.user_familyname}
                         </Text>
                       </Button>
-                    </View>
-                  )}
-                  keyExtractor={(item, index) => item.user_id.toString()}
-                />
-              </View>
-              <View style={styles.controllBtn}>
-                <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
-                <Button size="lg" color="primary" onClick={() => this.nextPage()}>Next</Button>
-              </View>
-            </ScrollView>
+                </View>
+              )}
+              keyExtractor={(item, index) => item.user_id.toString()}
+            />
           </View>
-        );
-      }
-    }
+          <View style={styles.controllBtn}>
+            <Button size="lg" color="primary" onClick={() => this.previousPage()}>Back</Button>
+            <Button size="lg" color="primary" onClick={() => this.nextPage()}>Next</Button>
+          </View>
+        </ScrollView>
+      </View>
+    );
   }
 }
 
 const styles = StyleSheet.create({
 
   container: {
-    height: "150%",
-    width: "auto",
-    display: "flex",
+    height: '150%',
+    width: 'auto',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#d9fbfb",
+    backgroundColor: '#d9fbfb',
   },
 
   content: {
-    width: "auto",
+    width: 'auto',
     minWidth: 500,
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   textInput: {
@@ -373,31 +362,31 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderRadius: 40,
-    margin: 8
+    margin: 8,
   },
 
   searchBtn: {
-    width: "auto",
-    marginTop: "4%",
-    flexDirection: "row",
+    width: 'auto',
+    marginTop: '4%',
+    flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
 
   allUserAccounts: {
-    marginTop: "5%",
-    marginBottom: "2%",
+    marginTop: '5%',
+    marginBottom: '2%',
     alignItems: 'center',
   },
 
   individualUser: {
-    marginBottom: "5%",
+    marginBottom: '5%',
   },
 
   controllBtn: {
-    marginTop: "2%",
-    width: "100%",
+    marginTop: '2%',
+    width: '100%',
     alignItems: 'center',
-  }
+  },
 
 });
 

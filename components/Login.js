@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -51,15 +51,15 @@ class LoginScreen extends Component {
           // Stores tokens, ID's and view states in AsyncStorage
           await AsyncStorage.setItem('@session_id', responseJson.id);
           await AsyncStorage.setItem('@session_token', responseJson.token);
-          console.log("My id is " + responseJson.id + " My token is " + responseJson.token)
+          console.log(`My id is ${responseJson.id} My token is ${responseJson.token}`);
           await AsyncStorage.setItem('@profileState', 'mine');
           await AsyncStorage.setItem('@postsState', 'mine');
 
-          //Gets number of drafts
+          // Gets number of drafts
           const draftCount = await AsyncStorage.getItem('@draftCount');
 
-          //If there is no number, set it to 0
-          if(isNaN(draftCount) || (draftCount == null)){
+          // If there is no number, set it to 0
+          if (isNaN(draftCount) || (draftCount == null)) {
             await AsyncStorage.setItem('@draftCount', 0);
           }
           // Navigates user to the landing page of the application
@@ -70,8 +70,8 @@ class LoginScreen extends Component {
         })
 
     onCheckboxBtnClick = async (selected) => {
-        console.log("THis is pressed")
-      }
+      console.log('THis is pressed');
+    }
 
     render() {
       // Login text fields and buttons
@@ -79,10 +79,10 @@ class LoginScreen extends Component {
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <TextInput style={styles.textInput} placeholder="Enter your email..." onChangeText={(email) => this.setState({ email })} value={this.state.email} />
-            <TextInput style={styles.textInput} placeholder="Enter your password..." onChangeText={(password) => this.setState({ password })} value={this.state.password} secureTextEntry/>
+            <TextInput style={styles.textInput} placeholder="Enter your password..." onChangeText={(password) => this.setState({ password })} value={this.state.password} secureTextEntry />
           </View>
           <View style={styles.buttonContainer}>
-            <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.login()} >Login</Button>
+            <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.login()}>Login</Button>
             <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.props.navigation.navigate('Signup')}>Signup</Button>
           </View>
         </View>
@@ -94,18 +94,18 @@ class LoginScreen extends Component {
 const styles = StyleSheet.create({
 
   container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+    height: '100%',
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: "#e5f6ff"
+    backgroundColor: '#e5f6ff',
   },
 
   textContainer: {
-    height: "auto",
-    width: "40%",
+    height: 'auto',
+    width: '40%',
     minWidth: 200,
-    marginTop: "1%",
+    marginTop: '1%',
   },
 
   textInput: {
@@ -113,17 +113,16 @@ const styles = StyleSheet.create({
     padding: 13,
     borderWidth: 1,
     borderRadius: 40,
-    margin: 8
+    margin: 8,
   },
 
   buttonContainer: {
-    height: "auto",
-    width: "20%",
+    height: 'auto',
+    width: '20%',
     justifyContent: 'space-evenly',
-    marginTop: "2%",
+    marginTop: '2%',
     flexDirection: 'row',
-  }
+  },
 });
-
 
 export default LoginScreen;
