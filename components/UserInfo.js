@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, Button,
+  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import { Button} from 'reactstrap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class UserInfo extends Component {
@@ -83,22 +83,48 @@ class UserInfo extends Component {
       );
     }
     return (
-      <ScrollView>
-        <View>
-          <Text>
-            {this.state.userInfo.first_name}
-          </Text>
-          <Text>
-            {this.state.userInfo.last_name}
-          </Text>
-          <Text>
-            {this.state.userInfo.email}
-          </Text>
-        </View>
-        <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView  style={styles.conent} showsVerticalScrollIndicator={false}>
+          <View style={styles.userInfo}>
+            <Text  style={styles.text}>
+              {this.state.userInfo.first_name}
+            </Text>
+            <Text  style={styles.text}>
+              {this.state.userInfo.last_name}
+            </Text>
+            <Text  style={styles.text}>
+              {this.state.userInfo.email}
+            </Text>
+          </View>
+          <Button color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+        </ScrollView>
+      </View>
     );
   }
 }
+
+// Styling
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  conent: {
+    marginTop: "1%",
+  },
+
+  userInfo: {
+    marginBottom: "7%",
+  },
+
+  text: {
+    fontWeight: 500,
+  },
+
+});
 
 export default UserInfo;

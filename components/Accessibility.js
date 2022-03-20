@@ -40,13 +40,15 @@ class Accessibility extends Component {
     // Signup text input fields, updates state on key change
     render() {
       return (
-        <View style={styles.buttonContainer}>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.ibmWebsite()}>Vision Friendly Color Palette</Button>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.windowsWebsite()} >Windows Screen Reder</Button>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.macWebsite()} >Mac Screen Reder</Button>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.androidWebsite()} >Android Screen Reder</Button>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.iOSWebsite()} >iOS Screen Reder</Button>
-          <Button size="lg" outline color="primary" style={styles.plz} onClick={() => this.props.navigation.goBack()}>Go Back</Button>
+        <View style={styles.container}>
+          <View style={styles.buttonContainer}>
+            <Button size="lg" color="info" style={styles.plz} onClick={() => this.ibmWebsite()}>Vision Friendly Color Palette</Button>
+            <Button size="lg" color="info" style={styles.plz} onClick={() => this.windowsWebsite()} >Windows Screen Reder</Button>
+            <Button size="lg" color="info" style={styles.plz} onClick={() => this.macWebsite()} >Mac Screen Reder</Button>
+            <Button size="lg" color="info" style={styles.plz} onClick={() => this.androidWebsite()} >Android Screen Reder</Button>
+            <Button size="lg" color="info" style={styles.plz} onClick={() => this.iOSWebsite()} >iOS Screen Reder</Button>
+            <Button size="lg" outline color="info" style={styles.plz} onClick={() => this.props.navigation.goBack()}>Go Back</Button>
+          </View>
         </View>
       );
     }
@@ -54,6 +56,19 @@ class Accessibility extends Component {
 
 // Styling
 const styles = StyleSheet.create({
+
+  container: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  buttonContainer: {
+    height: "100%",
+    justifyContent: 'space-evenly',
+  },
 
 });
 

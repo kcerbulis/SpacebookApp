@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Text, TextInput, View, Button, StyleSheet, FlatList, Alert,
+  Text, TextInput, View, StyleSheet, FlatList, Alert
 } from 'react-native';
+import { Button} from 'reactstrap';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -173,40 +174,68 @@ class FriendRequests extends Component {
           flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
         }}
         >
-          <Text>Loading</Text>
+          <Text style={styles.text}>Loading</Text>
         </View>
       );
     } if (this.state.requestsPending == false) {
       return (
-        <ScrollView>
-          <Text>No Pending Friend Requests</Text>
-          <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView style={styles.conent}>
+            <Text style={styles.text}>No Pending Friend Requests</Text>
+            <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+          </ScrollView>
+        </View>
       );
     }
     return (
-      <ScrollView>
-        <FlatList
-          data={this.state.friendRequestData}
-          renderItem={({ item, index }) => (
-            <View>
-              <Text>
-                {item.first_name}
-                {' '}
-                {item.last_name}
-              </Text>
-              <Button onPress={() => this.acceptFriendRequest(item.user_id)} title="Accept" />
-              <Button onPress={() => this.declineFriendReques(item.user_id)} title="Decline" />
-            </View>
-          )}
-        />
-        <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView style={styles.conent}>
+          <View style={styles.singleRequest}>
+            <FlatList
+              data={this.state.friendRequestData}
+              renderItem={({ item, index }) => (
+                <View>
+                  <Text style={styles.text}>
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </Text>
+                  <Button size="lg" color="primary" onClick={() => this.acceptFriendRequest(item.user_id)}>Accept</Button>
+                  <Button size="lg" color="danger" onClick={() => this.declineFriendReques(item.user_id)}>Decline</Button>
+                </View>
+              )}
+            />
+          </View>
+          <Button size="lg" color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+        </ScrollView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    width: "auto",
+    minWidth: "500px",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  conent: {
+    marginTop: "1%",
+  },
+
+  singleRequest: {
+    marginBottom: "10%",
+  },
+
+  text: {
+    fontWeight: 500,
+  }
+
+
 });
 
 export default FriendRequests;

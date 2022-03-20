@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, Button,
+  StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput
 } from 'react-native';
+import { Button} from 'reactstrap';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -154,20 +155,57 @@ class UpdateMyInfo extends Component {
       );
     }
     return (
-      <ScrollView>
-        <View>
-          <TextInput defaultValue={this.state.userInfo.first_name} onChangeText={(value) => this.setState({ updatedName: value })} />
-          <TextInput defaultValue={this.state.userInfo.last_name} onChangeText={(value) => this.setState({ updatedLast: value })} />
-          <TextInput defaultValue={this.state.userInfo.email} onChangeText={(value) => this.setState({ updatedEmail: value })} />
-          <TextInput placeholder="New password..." secureTextEntry onChangeText={(value) => this.setState({ updatedPassword: value })} />
-        </View>
-        <Button title="Save Changes" onPress={() => this.updateUserInformation()} />
-        <Button title="Change Profile Photo" onPress={() => this.props.navigation.navigate('TakePhoto')} />
-        <Button title="Accessibility" onPress={() => this.props.navigation.navigate('Accessibility')} />
-        <Button title="Go Back" onPress={() => this.props.navigation.goBack()} />
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.textContainer}>
+            <TextInput style={styles.textInput} defaultValue={this.state.userInfo.first_name} onChangeText={(value) => this.setState({ updatedName: value })} />
+            <TextInput style={styles.textInput} defaultValue={this.state.userInfo.last_name} onChangeText={(value) => this.setState({ updatedLast: value })} />
+            <TextInput style={styles.textInput} defaultValue={this.state.userInfo.email} onChangeText={(value) => this.setState({ updatedEmail: value })} />
+            <TextInput style={styles.textInput} placeholder="New password..." secureTextEntry onChangeText={(value) => this.setState({ updatedPassword: value })} />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button color="primary" onClick={() => this.updateUserInformation()}>Save</Button>
+            <Button color="success" onClick={() => this.props.navigation.navigate('TakePhoto')}>New Profile Photo</Button>
+            <Button color="info" onClick={() => this.props.navigation.navigate('Accessibility')}>Accessibility</Button>
+            <Button color="primary" outline onClick={() => this.props.navigation.goBack()}>Back</Button>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
+
+// Styling
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    backgroundColor: "#e5f6ff"
+  },
+
+  textContainer: {
+    height: "auto",
+    width: "40%",
+    minWidth: 200,
+    marginTop: "1%",
+  },
+
+  textInput: {
+    fontWeight: 500,
+    padding: 13,
+    borderWidth: 1,
+    borderRadius: 40,
+    margin: 8
+  },
+
+  buttonContainer: {
+    height: "55%",
+    width: "90%",
+    justifyContent: 'space-evenly',
+    marginTop: "2%",
+  },
+});
 
 export default UpdateMyInfo;
